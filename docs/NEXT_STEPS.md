@@ -1,6 +1,6 @@
 # THE HUNT FOR 18 – Next Steps
 
-**Last Updated:** 19 November 2026  
+**Last Updated:** 23 November 2026
 **Event Date:** 28 November 2026
 
 ## 1. Immediate Objective
@@ -20,11 +20,21 @@ Prioritize essential functionality, security, testing and deployment over option
 - Finalize maze structure and final objective.
 
 ### Technical decisions
-- Review proposed database tables against MVP scope.
-- Define the minimum required database schema.
-- Finalize participant and organizer permissions.
+- Expand the verified core schema into the remaining gameplay-specific MVP tables.
+- Define and implement trusted team and organizer provisioning.
+- Finalize submission and protected-answer operations.
 - Define submission and timer expiry behavior.
 - Establish development and production environments.
+
+## 2A. Completed Backend Foundation
+
+- Initial core migration `20261122173709_initial_core_schema.sql` created.
+- Migration successfully applied to production project `the-hunt-for-18`.
+- Local and remote migration histories match.
+- `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles` exist in the public schema.
+- Migration is committed and pushed; the Git working tree was clean before this documentation update.
+
+This is only the core foundation. The full database design and gameplay schema are still pending.
 
 ## 3. Development Roadmap
 
@@ -81,13 +91,12 @@ A feature is complete only when:
 
 ## 7. Next Development Session
 
-**Target date:** 20 November 2026
+**Target date:** 23 November 2026 or next implementation session
 
 First tasks:
-1. Review all planning documents.
-2. Confirm MVP scope.
-3. Finalize minimum project structure.
-4. Initialize React + Vite + TypeScript.
-5. Verify the initial application runs.
-6. Connect GitHub source control.
-7. Record the first implementation milestone.
+1. Continue implementation of the existing React + Vite + TypeScript application foundation.
+2. Connect the frontend to the verified Supabase project.
+3. Implement trusted team and organizer provisioning.
+4. Implement authentication and protected route boundaries.
+5. Add remaining MVP database migrations only after unresolved gameplay decisions are finalized.
+6. Implement one core application feature at a time and verify it.

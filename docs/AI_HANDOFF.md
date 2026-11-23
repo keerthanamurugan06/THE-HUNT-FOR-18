@@ -1,6 +1,6 @@
 # THE HUNT FOR 18 – AI Handoff Guide
 
-**Last Updated:** 19 November 2026  
+**Last Updated:** 23 November 2026
 **Event Date:** 28 November 2026
 
 ## 1. Purpose
@@ -64,18 +64,24 @@ Do not introduce unnecessary technologies without explaining their benefits and 
 
 ## 5. Current Project Stage
 
-**Stage:** Planning and documentation completed or in progress.
+**Stage:** Initial core database foundation completed; application implementation pending.
 
-The repository and planning documents have been created and populated.
+The repository, planning documents, and initial core database migration have been created.
 
 At the time of this handoff:
 
-- Application source code has not been implemented.
-- Supabase has not been connected.
-- Database migrations have not been created.
+- React + Vite + TypeScript foundation has been initialized; application features are not yet implemented.
+- The production Supabase project `the-hunt-for-18` has the initial core migration applied.
+- Local and remote migration histories match.
+- The public schema contains `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles`.
+- The migration is committed and pushed to GitHub.
+- The Git working tree was clean before the status-documentation update.
+- Gameplay and remaining database migrations have not been created.
 - Authentication has not been implemented.
 - Frontend dashboards have not been implemented.
 - Testing and deployment have not started.
+
+Do not interpret the initial core migration as completion of the full database schema.
 
 Check `CURRENT_PROGRESS.md` before assuming anything has changed.
 
@@ -106,7 +112,7 @@ Consult `DESIGN_DECISIONS.md` for the complete decision register. Pending decisi
 - Scoring and penalties.
 - Qualification criteria and number of finalist teams.
 - Detailed maze layout and mechanics.
-- Final database schema.
+- Remaining gameplay database tables and server-side operations.
 
 Discuss unresolved decisions with the project owner before implementing them.
 
@@ -154,15 +160,15 @@ Verify actual usage through GitHub settings instead of assuming an allowance.
 
 ## 11. Immediate Next Action
 
-Begin the foundation phase according to `NEXT_STEPS.md`.
+Continue according to `NEXT_STEPS.md`.
 
-The first implementation session should:
-1. Inspect the existing repository.
-2. Verify documentation and Git status.
-3. Confirm the MVP scope.
-4. Initialize React + Vite + TypeScript.
-5. Run the application and production build.
-6. Record the verified milestone.
+The next implementation session should:
+1. Inspect the existing repository and planning documents.
+2. Continue implementation of the existing React + Vite + TypeScript foundation.
+3. Connect the frontend to the verified Supabase production project.
+4. Implement trusted team and organizer provisioning.
+5. Implement authentication and protected route boundaries.
+6. Add remaining database migrations only after approved gameplay decisions are clear.
 
 The event is scheduled for 28 November 2026. Prioritize a working, tested MVP over optional features.
 

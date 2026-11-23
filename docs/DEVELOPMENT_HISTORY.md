@@ -52,13 +52,51 @@ Prepared:
 
 ### Development Status
 - Planning and documentation: In progress.
-- Application source code: Not started.
-- Database migrations: Not started.
-- Supabase connection: Not started.
+- Application foundation: React + Vite + TypeScript initialized; application features not started.
+- Initial core database migration: Completed and applied to production.
+- Gameplay database migrations: Not started.
+- Supabase connection: Production core schema verified.
 - Authentication: Not started.
 - Frontend implementation: Not started.
 - Testing: Not started.
 - Deployment: Not started.
+
+## Initial Core Database Milestone
+
+**Date:** 23 November 2026
+
+**Phase:** Backend foundation
+
+**Feature / Task:** Initial core Supabase PostgreSQL migration
+
+**Files Created:** `supabase/migrations/20261122173709_initial_core_schema.sql`
+
+**Files Modified:** Project status documentation
+
+**Implementation Summary:**
+- Created the initial core schema migration for `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles`.
+- Included UUID keys, constraints, indexes, triggers, RLS policies, privileged helper functions, and explicit column privileges.
+- Applied the migration successfully to the production Supabase project `the-hunt-for-18`.
+- Verified that local and remote Supabase migration histories match.
+- Verified all six public-schema tables exist.
+- Verified the migration is committed and pushed to GitHub.
+- Verified the Git working tree was clean before the status-documentation update.
+
+**Tests Performed:** Supabase migration history and production public-schema table verification.
+
+**Test Results:** Passed for the initial core migration scope.
+
+**Bugs Identified:** Migration syntax and privilege corrections were made before successful production application.
+
+**Corrections Made:** Corrected the freeze function syntax and hardened hash, freeze, and privilege definitions.
+
+**Git Commit:** Production migration commit reference was verified in repository history; the exact hash was not supplied for this documentation entry.
+
+**Remaining Work:**
+- Implement trusted Auth and team provisioning.
+- Implement remaining gameplay, submissions, scoring, evidence, timers, qualification and leaderboard tables and operations.
+- Implement application interfaces.
+- Complete authentication, testing and deployment.
 
 ### Copilot Usage Baseline
 **Recorded:** 19 November 2026
