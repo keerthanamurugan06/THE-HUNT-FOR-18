@@ -14,7 +14,7 @@ export default function TeamLoginPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const requestedPath = (location.state as LocationState | null)?.from?.pathname
-  const safeReturnPath = requestedPath === '/round-1' || requestedPath === '/team'
+  const safeReturnPath = requestedPath === '/round-1' || requestedPath === '/round-2' || requestedPath === '/team'
     ? requestedPath
     : '/team'
 

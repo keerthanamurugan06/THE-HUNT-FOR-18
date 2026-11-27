@@ -140,8 +140,9 @@ The Round 1 frontend and hosted backend support six variant boards, variant conf
 - Display order is randomized per team.
 - One challenge depends on Round 1 evidence.
 - Each correct challenge reveals one hidden word.
+- Each completed challenge reveals one victim (six total for Round 2).
 - Six hidden words form an investigation-related key phrase.
-- Correct phrase submission unlocks the next investigation stage.
+- Round 2 completion does not gate Round 3; organizer-controlled access applies.
 - Final phrase attempts are unlimited.
 - Incorrect final phrase attempts have no penalty.
 
@@ -161,6 +162,7 @@ Confirmed gameplay:
 - Optional hints with point deductions.
 - Hidden test-case validation.
 - One code fragment revealed per completed challenge.
+- Two victims revealed per completed challenge (six total for Round 3).
 - Three fragments combine into the final unlock code.
 
 Technical direction:
@@ -188,6 +190,16 @@ Confirmed direction:
 - Individual team progress.
 
 The exact maze layout, checkpoints, penalties, scoring and final answer format remain pending approval.
+
+### Preliminary progression and event operations
+
+- Every team can participate in Rounds 1, 2 and 3. An incomplete earlier round never blocks a later preliminary round; the organizer controls round access.
+- Six teams qualify on cumulative Round 1–3 scores.
+- Round durations and individual challenge marks are configurable without code changes or redeployment. The organizer can start, pause, resume, extend and end rounds; timers and scoring are server-authoritative.
+- Scoring changes apply equally to all teams and are audited. Leaderboards are released after each round, not live.
+- Round 1, Round 2 and Round 3 reveal six, six and six victims. All 18 discoveries persist on the same team-scoped Evidence Board.
+- Round 4 remains locked by default and requires organizer authorization. If event time is insufficient, the organizer can skip Round 4 and declare winners by cumulative Round 1–3 scores. If it runs, finalists missing essential clues receive evidence-recovery checkpoints with no retroactive marks.
+- Organizer dashboard, scoring/timer operations and Round 4 implementation are not part of the current Round 2 preparation step.
 
 ## 6. Database Status
 
@@ -256,11 +268,13 @@ These issues must be addressed through planned, verified changes.
 
 Current sequence:
 
-1. Review the verified Round 1 demonstration; wait for explicit approval before beginning Round 2.
-2. Repeat browser verification and capture screenshots when the computer-use runtime is available.
-3. Implement the approved server-authoritative timer and replace demo victim placeholders only after final content is approved.
-4. Continue remaining rounds after Round 1 review and approval.
-5. Perform event rehearsal and production deployment only after explicit approval.
+1. Round 2 implementation after Round 1 owner review.
+2. Round 3 implementation.
+3. Organizer dashboard, configurable durations/marks, server-authoritative timers/scoring and post-round leaderboards.
+4. Optional Round 4; keep locked unless authorized and apply the approved skip/recovery rules.
+5. End-to-end testing and deployment after explicit approval.
+
+Do not invent challenge content or scoring values. Organizer dashboard and Round 4 implementation are not part of the current preparation step.
 
 Implement one core feature at a time.
 

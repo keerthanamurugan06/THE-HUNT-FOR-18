@@ -84,8 +84,9 @@ Solutions must be validated securely on the server. Never expose protected solut
 - Challenge display order is randomized per team.
 - One challenge depends on Round 1 evidence.
 - Each correct challenge reveals one hidden word.
+- Each completed challenge also reveals one victim; Round 2 can reveal six victims total.
 - Six words form a final investigation-related phrase.
-- Final phrase attempts are unlimited, with no penalty for incorrect attempts.
+- Final phrase attempts are unlimited, with no penalty for incorrect attempts. Round 2 completion does not gate Round 3 participation.
 
 Exact challenge content, hidden words, scoring and evidence dependency remain subject to project-owner approval.
 
@@ -102,11 +103,25 @@ Confirmed direction:
 - Solutions are validated against hidden test cases.
 - Optional hints provide additional clues or examples with point deductions.
 - Each completed challenge reveals one code fragment.
+- Each completed challenge independently reveals two victims; Round 3 can reveal six victims total.
 - All three fragments combine into a final unlock code.
 - Python execution must use a restricted, secure environment.
 - Hidden formulas and test cases must remain server-side.
 
 Do not replace this with a blindfolded communication challenge or a visual code builder.
+
+### Event progression and operations
+
+- All teams may participate in Rounds 1, 2 and 3. Incomplete work in one preliminary round never blocks participation in a later preliminary round.
+- The organizer controls access to each round.
+- The top six teams qualify using cumulative scores from Rounds 1–3.
+- Round durations and individual challenge marks must be organizer-configurable without code changes or redeployment.
+- Organizer controls start, pause, resume, extend and end actions. Timers and scoring are server-authoritative.
+- Scoring changes apply equally to every team and are audited. Leaderboards are released after each round and are not live.
+- Round 4 remains locked by default and requires organizer authorization. If event time is insufficient, the organizer may skip it and declare winners by cumulative Rounds 1–3 scores.
+- If Round 4 runs, finalists missing essential clues receive evidence-recovery checkpoints. Recovered evidence gives no retroactive marks.
+- Rounds 1, 2 and 3 reveal six, six and six victims respectively. All 18 discoveries persist on the same team-scoped Evidence Board.
+
 ### Round 4 — OPERATION: DEADLOCK
 
 A 2D pixel-art investigation maze.

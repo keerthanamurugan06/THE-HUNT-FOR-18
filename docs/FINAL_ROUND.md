@@ -3,8 +3,8 @@
 ## Overview
 An interactive 2D pixel-art investigation maze.
 
-**Provisional duration:** 38 minutes  
-**Status:** Core direction confirmed; detailed mechanics pending.
+**Duration:** Organizer-configurable; no fixed value approved.
+**Status:** Optional and locked by default; detailed mechanics pending. The organizer alone authorizes Round 4 or skips it when event time is insufficient. If skipped, winners are determined by cumulative Round 1–3 scores.
 
 ## Objective
 Connect the information and evidence collected from Rounds 1–3 and identify the killer.
@@ -21,6 +21,7 @@ It is not an unrelated game or a new victim-discovery round.
 - Wrong routes may contain mini-challenges before returning.
 - All qualified teams use the same maze and challenge structure.
 - Team progress is stored separately.
+- Finalists missing essential clues receive evidence-recovery checkpoints; recovered evidence awards no retroactive marks.
 
 ## Proposed Game Elements
 Candidate tile types:
@@ -69,7 +70,6 @@ The number and arrangement of zones are not finalized.
 - Record results.
 
 ## Pending Decisions
-- Qualification count.
 - Exact level count.
 - Maze layout.
 - Checkpoints.

@@ -3,20 +3,19 @@
 ## Overview
 Participants solve 9×9 Sudoku variants to uncover investigation evidence.
 
-**Provisional duration:** 20 minutes  
+**Duration:** 20-minute play target; organizer-configurable without code changes or redeployment (controls are not implemented yet).
 **Status:** Six-variation Open Challenge Mode, server-side completion validation, and team-scoped demo victim unlocks pass hosted integration on test project `bfzlszktufjqlfiyknga`. Authentication regression, lint, build and local Sudoku rule checks pass. Both Round 1 migrations are applied. Browser visual verification and screenshots were unavailable because the computer-use runtime failed to initialize. The server-authoritative timer is not implemented.
 
 **Diagonal Sudoku (X-Sudoku) rules (owner approved 27 November 2026):** Classic rows/columns/3×3 boxes plus both long diagonals, each containing 1–9 exactly once. This replaces Combined Sudoku for the demonstration and final event.
 
 **Demo content:** Six temporary demonstration puzzles are approved and marked demo-only. Each candidate was checked to have exactly one valid solution. The five earlier generated candidates had not been persisted, so their exact givens were unrecoverable; regenerated candidates are in the migration. Conflict-safe inserts preserve the existing Classic definition and all team progress. Victim reveals use temporary numbered placeholders; no storyline content, scoring or penalties are introduced.
 
-### Current Classic Sudoku Implementation
-- Starting givens and saved progress load through `load_classic_sudoku()`.
-- Board edits autosave to the authenticated team's progress row; refresh restoration is verified.
-- Original clues are enforced by a database trigger.
-- Completion is accepted only after `complete_classic_sudoku()` verifies the saved board server-side.
-- The solution is not included in frontend source. Evidence delivery and the server-authoritative round timer are not integrated yet.
-- This implementation covers Classic only. It does not implement the other five variants or complete Round 1.
+### Current Hosted Demonstration
+- All six variant boards load through `load_round1_sudokus()` with independent per-team progress and randomized display order.
+- Board edits autosave and restore; database triggers protect original clues.
+- `complete_round1_sudoku()` validates saved solutions server-side and unlocks one team-scoped victim placeholder per puzzle.
+- Puzzle solutions remain server-side. Hosted integration and authentication regressions passed on the approved test project.
+- The server-authoritative timer and organizer controls are not implemented. Browser visual verification remains pending.
 
 ## Gameplay
 - Six Sudoku variations are included: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Diagonal Sudoku (X-Sudoku).

@@ -142,9 +142,9 @@ Completion criteria:
 
 ---
 
-## Phase 6 — Remaining Rounds
+## Phase 6 — Rounds 2 and 3
 
-**Objective:** Implement the approved gameplay for Rounds 2, 3 and 4.
+**Objective:** Implement approved gameplay for Rounds 2 and 3. All teams participate in each preliminary round; completion in an earlier round is not an access gate. Round access remains organizer-controlled.
 
 ### Round 2 — PASSWORD BREAKER
 
@@ -154,8 +154,9 @@ Tasks:
 - [ ] Implement randomized display order.
 - [ ] Connect the Round 1 evidence dependency.
 - [ ] Implement secure answer validation.
-- [ ] Reveal hidden words after successful validation.
+- [ ] Reveal the associated hidden word and one victim after successful validation.
 - [ ] Implement final phrase validation.
+- [ ] Do not use Round 2 completion or phrase entry to gate Round 3 participation.
 - [ ] Preserve progress.
 
 ### Round 3 — BLIND CODE: The Black Box
@@ -169,21 +170,11 @@ Tasks:
 - [ ] Keep hidden logic and test cases server-side.
 - [ ] Implement hidden test-case validation.
 - [ ] Define optional hints and their point deductions.
-- [ ] Reveal one code fragment after each successful challenge.
+- [ ] Reveal one code fragment and two victims after each successful challenge.
 - [ ] Implement final unlock-code validation using all three fragments.
+- [ ] Do not gate Round 3 participation on earlier round completion.
 - [ ] Preserve team progress and hint usage.
 - [ ] Test execution limits, invalid submissions and security boundaries.
-### Round 4 — OPERATION: DEADLOCK
-
-Tasks:
-- [ ] Finalize maze layout and progression.
-- [ ] Finalize checkpoint and mini-challenge mechanics.
-- [ ] Implement the 2D pixel-art maze.
-- [ ] Implement movement and navigation.
-- [ ] Integrate evidence from earlier rounds.
-- [ ] Implement persistent team progress.
-- [ ] Implement secure final-answer validation.
-
 Completion criteria:
 - Each round follows the approved design.
 - Progress is stored reliably.
@@ -192,7 +183,7 @@ Completion criteria:
 
 ---
 
-## Phase 7 — Scoring, Timers and Evidence
+## Phase 7 — Organizer Controls, Timers, Scoring and Leaderboards
 
 **Objective:** Integrate the shared event systems.
 
@@ -205,6 +196,10 @@ Tasks:
 - [ ] Implement qualification rules.
 - [ ] Implement leaderboard.
 - [ ] Record important organizer actions.
+- [ ] Configure round durations and individual challenge marks without code changes or redeployment.
+- [ ] Support start, pause, resume, extend and end actions.
+- [ ] Apply scoring changes equally to all teams and audit each change.
+- [ ] Release leaderboards after each round, not live.
 
 Completion criteria:
 - Scores are consistent and server-validated.
@@ -214,7 +209,22 @@ Completion criteria:
 
 ---
 
-## Phase 8 — Full Event Testing
+## Phase 8 — Optional Round 4: OPERATION: DEADLOCK
+
+Round 4 remains locked by default and requires organizer authorization. If event time is insufficient, the organizer may skip it and declare winners using cumulative Round 1–3 scores.
+
+If Round 4 runs, implement evidence-recovery checkpoints for finalists missing essential clues. Recovered evidence does not award retroactive marks.
+
+Tasks:
+- [ ] Finalize maze layout and progression.
+- [ ] Finalize checkpoint and mini-challenge mechanics.
+- [ ] Implement the 2D pixel-art maze and team progress.
+- [ ] Integrate evidence from earlier rounds.
+- [ ] Implement secure final-answer validation.
+
+---
+
+## Phase 9 — End-to-End Event Testing
 
 **Objective:** Verify reliability for the intended event size.
 
@@ -239,7 +249,7 @@ Completion criteria:
 
 ---
 
-## Phase 9 — Deployment and Rehearsal
+## Phase 10 — Deployment and Rehearsal
 
 **Objective:** Prepare the verified platform for the live event.
 

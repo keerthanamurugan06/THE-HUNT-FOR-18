@@ -6,7 +6,7 @@
 
 **Status:** Gameplay and implementation approach finalized.
 
-**Provisional duration:** 18 minutes (subject to final event schedule).
+**Duration:** Organizer-configurable; no fixed value approved.
 
 Round 3 is a black-box reverse-engineering challenge. Teams investigate the behaviour of hidden programs by providing inputs, observing outputs, identifying the underlying logic, and recreating that logic using Python.
 
@@ -28,7 +28,10 @@ The round must contribute meaningfully to the continuous storyline established i
 6. Teams can run their programs against available examples.
 7. Submitted programs are checked against hidden test cases.
 8. Successfully completing a challenge reveals one code fragment.
-9. All three code fragments must be combined to produce the final unlock code.
+9. Successfully completing each challenge also reveals two victims; all six Round 3 discoveries persist on the shared team-scoped Evidence Board.
+10. All three code fragments must be combined to produce the final unlock code.
+
+Teams may participate in Round 3 even if Rounds 1 or 2 are incomplete. The organizer controls round access. Individual challenge marks and round duration must be configurable without code changes or redeployment; scoring and timers are server-authoritative.
 
 ## Challenge Progression
 
@@ -45,7 +48,7 @@ Exact puzzle programs and test cases will be prepared separately.
 - Teams may request optional hints.
 - Hints reveal additional examples or clues about the hidden logic.
 - Requesting hints deducts points from the team's score.
-- Hint penalties and scoring values must be finalized before implementation.
+- Hint penalties and mark values are configurable; do not invent values. Scoring changes must apply equally to all teams and be audited.
 
 ## Python Editor
 
@@ -96,7 +99,7 @@ The gameplay and editor approach are finalized. The following content and techni
 - Hint content and point deductions.
 - Challenge scoring and completion rewards.
 - Three code fragments and the final unlock code.
-- Final duration and scoring configuration.
+- Event-specific duration and challenge mark values; duration/marks are organizer-configurable without code changes or redeployment, and no score values are approved yet.
 
 ## Implementation Rule
 

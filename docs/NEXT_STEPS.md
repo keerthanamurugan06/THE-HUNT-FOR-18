@@ -12,12 +12,10 @@ Prioritize essential functionality, security, testing and deployment over option
 ## 2. Remaining Planning Tasks
 
 ### Gameplay decisions
-- Finalize Round 3 challenge programs, input-output examples, supported Python syntax, execution limits, hint content, point deductions, scoring and final unlock code.
-- Confirm victim information distribution.
-- Finalize challenge content and evidence.
-- Define scoring and penalties.
-- Confirm qualification criteria.
-- Finalize maze structure and final objective.
+- Round 2 and Round 3 victim counts and non-blocking progression are confirmed; keep exact victim/story content and all mark values uninvented until approved.
+- Prepare Round 2's six challenges and Round 1 evidence dependency for owner approval.
+- Round 3 challenge programs, I/O examples, supported Python syntax, execution limits, hints, code fragments and final unlock code remain to be specified.
+- Round 4 is optional; its maze and checkpoint content remain pending.
 
 ### Technical decisions
 - Organizer-authorized team provisioning and Team ID + access code login are implemented and remotely verified on the test project; hosted public signup is disabled there.
@@ -42,11 +40,13 @@ This is only the core foundation. The full database design and gameplay schema a
 
 ## 3. Immediate Development Priorities
 
-1. Review the completed Round 1 coordinator demonstration; do not begin Round 2 before explicit approval.
-2. Repeat browser visual verification and capture screenshots when the computer-use runtime is available.
-3. Implement an approved server-authoritative Round 1 timer before event use; the current timer is not authoritative.
-4. Replace temporary victim placeholders only after final victim information is approved; do not invent story content or scoring.
-5. Keep all further hosted verification on test project `bfzlszktufjqlfiyknga`; never access production.
+1. Complete manual visual review of the hosted-tested Round 2 interface, using existing authorized organizer/team access. No competition content is finalized.
+2. Round 3 implementation, including two victim reveals for each of its three challenges.
+3. Organizer dashboard, configurable round/challenge marks, server-authoritative timers and scoring, and after-round leaderboards.
+4. Optional Round 4; keep it locked unless authorized and support the approved skip/recovery policies.
+5. End-to-end testing and deployment after approval.
+
+Do not implement the organizer dashboard or Round 4 as part of Round 2 preparation. Do not invent challenge content or scoring values. Keep hosted work on test project `bfzlszktufjqlfiyknga`; never access production.
 
 Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow
@@ -91,7 +91,7 @@ A feature is complete only when:
 **Target date:** 27 November 2026 or next implementation session
 
 First tasks:
-1. Review the current uncommitted changes and verified test-project state.
-2. Review this test-project Classic Sudoku milestone and verify the UI against the remote save/restore tests.
-3. Define the next approved scope before implementing additional Round 1 variants or other rounds.
-4. Continue testing only against test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.
+1. Review Round 2 manually; its migration and hosted integration tests are complete on the approved test project.
+2. Record owner feedback and address any approved Round 2 corrections.
+3. Do not begin Round 3 until the owner has reviewed Round 2 and approved the next milestone.
+4. Continue using only test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.

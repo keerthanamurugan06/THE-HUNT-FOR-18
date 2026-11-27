@@ -15,9 +15,10 @@ The investigation progresses from discovering individual victim-related informat
 
 The four rounds are parts of ONE investigation.
 
-- Rounds 1–3 progressively reveal information about the 18 victims.
+- Rounds 1–3 are preliminary rounds open to all teams; incomplete work in one never blocks participation in a later preliminary round.
+- Rounds 1, 2 and 3 reveal six victims each, for 18 total. All discoveries persist on the same team-scoped Evidence Board.
 - Each round contributes information required for the overall investigation.
-- The final round brings the collected investigation together.
+- The optional, organizer-authorized final round brings the collected investigation together for the top six teams.
 - The final objective is to identify the killer.
 
 **Critical rule:** The final round must not introduce an unrelated mystery or change the established storyline.
@@ -30,7 +31,7 @@ The four rounds are parts of ONE investigation.
 
 Participants solve 9×9 Sudoku-based logic puzzles and their variants.
 
-Each correctly solved puzzle unlocks associated evidence.
+Each correctly solved puzzle unlocks one victim discovery; Round 1 reveals six total.
 
 The evidence contributes to the investigation of the 18 victims and becomes useful in subsequent stages.
 
@@ -42,13 +43,13 @@ The evidence contributes to the investigation of the 18 victims and becomes usef
 
 Participants solve six independent password and code-breaking challenges.
 
-Each correctly solved challenge reveals one hidden word. The six words combine into an investigation-related key phrase.
+Each correctly solved challenge reveals one hidden word and one victim. Round 2 reveals six total. The six words combine into an investigation-related key phrase.
 
 One challenge requires evidence obtained in Round 1.
 
-Correct submission of the phrase unlocks the next investigation stage.
+Correct phrase submission unlocks its defined investigation content, but does not gate Round 3 participation. Round access is organizer-controlled.
 
-**Output:** Six hidden words and the successfully unlocked investigation stage.
+**Output:** Six hidden words, six victim discoveries and the phrase result.
 
 ### Round 3 – BLIND CODE: The Black Box
 
@@ -65,9 +66,9 @@ The round contains three progressively harder challenges:
 
 Optional hints can provide additional clues or examples in exchange for point deductions.
 
-Each successfully completed challenge reveals one code fragment. The three fragments combine into the final unlock code.
+Each successfully completed challenge reveals one code fragment and two victims. Round 3 reveals six total. The three fragments combine into the final unlock code.
 
-**Output:** Three code fragments and the successfully decoded final unlock code.
+**Output:** Three code fragments, six victim discoveries and the final unlock-code result.
 
 **Technical direction:** Python execution must use a restricted, secure environment. Hidden program logic and test cases must remain server-side.
 
@@ -75,7 +76,7 @@ Each successfully completed challenge reveals one code fragment. The three fragm
 
 **Story purpose:** Connect the entire investigation and identify the killer.
 
-Qualified teams enter a 2D pixel-art investigation maze.
+If organizer-authorized, the top six teams enter a 2D pixel-art investigation maze. Round 4 remains locked by default and can be skipped if event time is insufficient; winners can then be declared using cumulative Round 1–3 scores.
 
 The complete map is visible, but the routes are difficult to solve.
 
@@ -84,6 +85,8 @@ Wrong routes may contain mini-challenges before teams can return to the main pro
 Teams must use information collected from the earlier rounds to progress through the investigation and reach the final objective.
 
 **Final objective:** Identify the killer by connecting the investigation evidence.
+
+When Round 4 runs, finalists missing essential clues can recover them at evidence checkpoints. Recovered evidence does not award retroactive marks.
 
 ## 4. Continuity Rules
 
@@ -125,7 +128,7 @@ Organizers must be able to configure and manage confidential story content witho
 
 The investigation is considered complete when a qualified team:
 
-1. Progresses through the required earlier-round investigation stages.
+1. Completes the investigation; any essential clues a finalist lacks can be recovered at an approved Round 4 checkpoint.
 2. Reaches the final investigation objective.
 3. Connects the required evidence.
 4. Submits the killer identification through the authorized final-round interface.
@@ -135,7 +138,6 @@ The exact evidence structure, final answer format and scoring rules must be docu
 
 ## 7. Pending Story Decisions
 
-- Exact allocation of the 18 victims across Rounds 1–3.
 - Victim identities and case details.
 - Evidence content and relationships.
 - Round 3 challenge programs, input-output examples, hint content, point deductions, scoring and final unlock code.

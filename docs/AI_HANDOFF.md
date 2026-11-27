@@ -1,5 +1,14 @@
 # THE HUNT FOR 18 – AI Handoff Guide
 
+## Round 2 Milestone 4 current handoff (27 November 2026)
+
+- Local participant and minimal organizer interfaces are implemented for database-driven Round 2 configuration and play. See `docs/ROUND_2.md` and migration draft `supabase/migrations/20261127180000_round2_password_breaker.sql`.
+- Migration `20261127180000_round2_password_breaker.sql` is applied and verified in history only on project `bfzlszktufjqlfiyknga` (`the-hunt-for-18-test`). Pre-apply ref verification and dry-run confirmed exactly one pending migration.
+- Hosted Round 2 integration, team-auth regression, and Classic/Round 1 regression all passed. Checks covered organizer authorization, configuration lock, participant secret filtering, order/progress persistence, answers/rewards/phrase, R1 dependency, cross-team isolation and unchanged Round 3 lock.
+- Browser verified unauthenticated participant and organizer route gates. Signed-in participant gameplay and organizer configuration screens still need manual visual review.
+- Lint, build, test-script syntax and diff checks passed. Build retains the >500 kB bundle warning; Git reports line-ending warnings.
+- Test-created sessions were revoked, teams suspended, test events cancelled and temporary organizer role deactivated. The existing review team/progress remains untouched. No data was deleted; no production operation, commit or push occurred. Do not start Round 3/4.
+
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
 

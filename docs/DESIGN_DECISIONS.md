@@ -79,7 +79,7 @@ This document records approved project decisions. Do not change an approved deci
 | D037 | Challenge display order is randomized independently for each team. | CONFIRMED |
 | D038 | One challenge depends on evidence obtained from Round 1. | CONFIRMED |
 | D039 | Each correctly solved challenge reveals one hidden word; all six words form the final key phrase. | CONFIRMED |
-| D040 | Final phrase attempts are unlimited, with no penalty for incorrect attempts; a correct phrase unlocks the next stage. | CONFIRMED |
+| D040 | Final phrase attempts are unlimited, with no penalty for incorrect attempts. Round 2 completion or phrase entry does not gate Round 3 participation; round access is organizer-controlled. | CONFIRMED |
 
 ### Round 3 - BLIND CODE
 
@@ -99,3 +99,19 @@ This document records approved project decisions. Do not change an approved deci
 | D047 | Round 4 uses a 2D pixel-art investigation maze. | CONFIRMED |
 | D048 | The complete maze map is visible to participants, with progression through the investigation. | CONFIRMED |
 | D049 | Qualified teams use the same maze and challenge structure, while progress is tracked separately for each team. | CONFIRMED |
+
+## 7. Newly Approved Event Decisions (27 Nov 2026)
+
+| ID | Decision | Status |
+|---|---|---|
+| D053 | Every team may participate in Rounds 1, 2 and 3; incomplete work in a prior preliminary round never blocks access to a later one. The organizer controls round access. | CONFIRMED |
+| D054 | The top six teams qualify using cumulative scores from Rounds 1–3. | CONFIRMED |
+| D055 | Round durations and individual challenge marks are organizer-configurable without code changes or redeployment. | CONFIRMED |
+| D056 | The organizer can start, pause, resume, extend and end rounds; timers and scoring are server-authoritative. | CONFIRMED |
+| D057 | Scoring changes apply equally to all teams and are audited. Leaderboards are released after each round, never live. | CONFIRMED |
+| D058 | Round 2 has six victim reveals, one for each completed challenge. | CONFIRMED |
+| D059 | Round 3 has three Python black-box challenges, each revealing two victims on completion. | CONFIRMED |
+| D060 | All 18 victim discoveries (six per preliminary round) persist on the same team-scoped Evidence Board. | CONFIRMED |
+| D061 | Optional Round 4 remains locked by default and requires organizer authorization. | CONFIRMED |
+| D062 | If event time is insufficient, the organizer may skip Round 4 and declare winners using cumulative Rounds 1–3 scores. | CONFIRMED |
+| D063 | If Round 4 runs, finalists missing essential clues receive evidence-recovery checkpoints; recovered evidence awards no retroactive marks. | CONFIRMED |

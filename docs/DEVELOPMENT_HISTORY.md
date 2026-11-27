@@ -199,7 +199,57 @@ Record actual credit usage after each development session when available.
 
 **Git Commit:** None; no commit or push performed.
 
+### Round 2 Milestone 4 — hosted engine and integration verification
+
+**Date:** 27 November 2026
+
+**Feature / Task:** Configurable six-slot PASSWORD BREAKER engine, organizer configuration UI and participant challenge flow.
+
+**Files Created:** `src/components/RequireOrganizerAuth.tsx`, `src/pages/OrganizerRound2Page.tsx`, `src/pages/Round2Page.tsx`, `src/pages/Round2Page.css`, `supabase/migrations/20261127180000_round2_password_breaker.sql`.
+
+**Files Modified:** `src/App.tsx`, `src/pages/TeamLoginPage.tsx`, `src/pages/TeamHomePage.tsx`, `src/components/EvidenceBoard.tsx`, `docs/ROUND_2.md`, `docs/CURRENT_PROGRESS.md`, `docs/DATABASE_DESIGN.md`, `docs/NEXT_STEPS.md`, `docs/AI_HANDOFF.md`.
+
+**Implementation Summary:** Added organizer-role guarded login/configuration, six configurable fields with protected answer input, participant challenge switching, server RPC answer/phrase submission, per-team status/rewards UI and Round 2 victim display on the Evidence Board. The migration draft stores answer and phrase hashes privately, seeds generic temporary demo placeholders, persists team order/progress and blocks configuration changes once play/progress begins. It requires exactly six slots, victims 07–12 and one Round 1 victim dependency; finalization rejects demo placeholders and requires all final passwords plus a six-word phrase. All team and organizer authorization is rechecked server-side. No score ledger/timer or other round was implemented.
+
+**Tests Performed:** `npm.cmd run lint`; `npm.cmd run build`; `git diff --check`; `node --check supabase/tests/round2-password-breaker.remote.mjs`; linked ref verification; remote dry-run and migration application; migration history verification; hosted Round 2 integration; hosted auth regression; hosted Classic/Round 1 regression; local browser route-gate verification.
+
+**Test Results:** Lint, build, syntax, and diff checks passed; Vite reports the JS bundle exceeds 500 kB. The linked ref was verified as `bfzlszktufjqlfiyknga`; the dry-run listed only the approved migration. It applied successfully and appears in remote history. Hosted Round 2 integration, authentication regression and Classic/Round 1 regression passed. Browser route protection was visually confirmed for both participant and organizer routes; signed-in gameplay was not browser-tested.
+
+**Remaining Work:** Manual signed-in visual review and any owner-approved refinements. The existing review team and progress were not accessed or changed. Test-created teams were suspended, events cancelled, sessions revoked and the temporary organizer role deactivated without deleting project data. No production access, commit or push occurred. Round 3/4 were not started.
+
 ### Development History Entry Template
+
+### Organizer manual-login support follow-up
+
+**Date:** 27 November 2026
+
+**Feature / Task:** Investigate organizer login failure and verify manual-review account.
+
+**Files Modified:** `src/components/RequireOrganizerAuth.tsx`, `.gitignore`, `docs/ROUND_2.md`.
+
+**Root Cause / Finding:** Could not reproduce the reported Auth rejection with the current DPAPI credentials. Port 5174 serves the approved test project URL and publishable key. The Auth account is confirmed and unbanned, has the organizer role, and exact Supabase JS sign-in succeeded. The prior frontend collapsed every Auth error to the same generic text, so the exact historical cause cannot be recovered; stale/copied input remains the likely cause.
+
+**Correction:** Trim surrounding whitespace from organizer email only; preserve password unchanged; map safe Auth error categories to clearer messages. No authentication/RLS policy was weakened.
+
+**Verification:** Supabase JS login, organizer role RPC, event list and six-slot Round 2 configuration access passed. Hosted participant authentication regression passed. `npm.cmd run lint`, `npm.cmd run build`, and `git diff --check` passed; bundle-size and line-ending warnings remain.
+
+**Security / Fixture State:** Temporary review organizer is active on test project only; its verification session was revoked. DPAPI-encrypted credentials are Git-ignored and ACL-restricted to the Windows user. Existing review team/progress was not accessed. No production access, commit or push.
+
+### Local Supabase target isolation follow-up
+
+**Date:** 27 November 2026
+
+**Feature / Task:** Resolve browser request targeting production during local organizer login.
+
+**Files Modified:** `vite.config.ts`, `docs/ROUND_2.md`, `docs/DEVELOPMENT_HISTORY.md`.
+
+**Root Cause:** Owner-provided Network evidence showed the browser sent the Auth request to production. Process audit found three repository-specific Vite servers across ports 5173/5174. Earlier checks inspected a currently served module, not the actual stale browser/runtime that sent the reported request. Vite's default startup without explicit process variables resolved to a non-test URL; the source `.env.local` was not inspected.
+
+**Correction:** Stopped only those three repository Vite processes. Added a dev-server guard that reads only `VITE_SUPABASE_URL` and refuses startup unless its origin is the approved test project. Started a clean server on port 5180 with explicit test-project URL and matching publishable key supplied from Supabase CLI process memory.
+
+**Verification:** A dev startup without explicit test variables failed closed. Port 5180 served the organizer page with HTTP 200; its Supabase module URL and publishable key matched test project `bfzlszktufjqlfiyknga`, with no production reference. Old ports 5173/5174 had no listeners. The fresh browser origin rendered organizer login without sending credentials. `npm.cmd run lint`, `npm.cmd run build`, and `git diff --check` passed; bundle-size and line-ending warnings remain.
+
+**Safety:** No production operation was performed by this investigation. Existing test organizer credentials were unchanged. No participant review team was accessed. No commit or push.
 
 For every future milestone, record:
 

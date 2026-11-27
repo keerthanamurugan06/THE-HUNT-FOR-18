@@ -1,5 +1,7 @@
 # THE HUNT FOR 18 – Final Logical Database Design
 
+> **Implementation note (27 November 2026):** Migration `20261127180000_round2_password_breaker.sql` implements an event-scoped six-slot question set, private bcrypt-hashed challenge/phrase answers, organizer configuration RPCs, per-team order/progress, server validation and victim unlock RPCs. It is applied and hosted-tested on test project `bfzlszktufjqlfiyknga` only. See `docs/ROUND_2.md` for verified results and remaining browser review. No production operation was performed.
+
 ## 1. Purpose and Scope
 
 This document defines the approved logical database design for THE HUNT FOR 18. It is
@@ -373,8 +375,9 @@ Authorizes a team to enter a later round, including the final round.
 
 Use one current qualification decision per team and round, while retaining
 revisions through audit history. Qualification and final-round unlocking are
-server-side operations. The qualification count and exact scoring rule remain
-pending.
+server-side operations. Qualification for optional Round 4 is the top six teams
+by cumulative Round 1–3 scores. Preliminary-round access is not gated by prior
+completion. Exact marks remain pending; never invent scoring values.
 
 ### 3.6 EVENT CONTROL
 
@@ -386,7 +389,7 @@ The server-authoritative timer state for a round.
 - `started_at`, `ends_at`, `paused_at`, `accumulated_paused_seconds`
 - `updated_at`, `updated_by`
 
-Timer start, pause, resume, extension, reduction and manual end are authorized
+Timer start, pause, resume, extension and manual end are authorized
 server-side operations. All teams read the same authoritative timestamps.
 
 #### `event_audit_logs`

@@ -2,7 +2,7 @@
 
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
-**Development Status:** Team authentication and Round 1 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Both approved Round 1 migrations are applied and verified. Browser automation could not initialize in this environment; the server-authoritative timer remains pending.
+**Development Status:** Team authentication, Round 1, and Round 2 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Round 2 is available for manual review. Admin controls and Round 4 remain deferred.
 
 ## 1. Overall Status
 
@@ -32,6 +32,10 @@
 | Testing | Build, lint, Sudoku rule checks, remote authentication regression and full hosted Round 1 integration pass |
 | Deployment | Authentication functions deployed to test project; production deployment not started |
 | Round 1 variants | Six-puzzle UI/rules, demo seeds, server validation and team-scoped victim unlock persistence are implemented and hosted-tested; browser visual verification and server timer remain pending |
+| Round 2 | Six-slot configurable engine and organizer/participant interfaces implemented; migration applied to test project; hosted integration and auth/Round 1 regression passed; local development now fails closed unless configured for the test project; signed-in browser walkthrough pending |
+| Round 3 | Three Python black-box challenges and two victims per challenge confirmed; implementation pending |
+| Event operations | Organizer-controlled access, cumulative top-six qualification, configurable marks/durations, server-authoritative timers/scoring and post-round leaderboards confirmed; dashboard pending |
+| Round 4 | Optional and locked by default; organizer authorization, skip and evidence-recovery decisions recorded; implementation deferred |
 
 ## 2. Completed Planning Work
 
@@ -116,6 +120,7 @@ This milestone implements only the initial core schema. It does not complete the
 
 ### Pending
 The following application and database work remains pending:
+- Complete signed-in manual browser review of Round 2 participant and organizer pages. Route guards were verified in the browser; full gameplay was verified through hosted integration RPCs.
 - Complete browser visual verification when the computer-use runtime is available; capture Round 1 screenshots.
 - Add an approved server-authoritative Round 1 timer before event use.
 - Replace numbered demo victim placeholders only after final victim content is approved.
@@ -127,6 +132,18 @@ The following application and database work remains pending:
 - Participant and organizer dashboards.
 - Answer and submission validation.
 - Testing and production deployment.
+
+### Round 2 Milestone 4 — hosted implementation and verification (27 November 2026)
+
+- Added a six-slot database-driven Round 2 draft with private bcrypt-hashed challenge answers/final phrase, organizer-only configuration RPCs, persistent per-team randomized order, team progress, evidence unlocks and server-side submission RPCs.
+- Added an organizer login/role guard, minimal organizer question manager, team-protected participant challenge page, final phrase submission UI, Round 2 navigation and Round 2 entries on the team Evidence Board.
+- Generic placeholders and demo answer hashes are temporary demonstration content, not competition content. No final questions or scoring policy were invented.
+- SQL guards reject missing/ineligible round state, require exactly six slots, victims 07–12 and exactly one Round 1 dependency, and block configuration edits after activity/progress.
+- `20261127180000_round2_password_breaker.sql` was applied only to test project `bfzlszktufjqlfiyknga` after the ref was reconfirmed and a dry-run listed only that migration. Remote migration history confirms it. Production was not accessed.
+- Hosted Round 2 integration passed organizer-only configuration, authorization rejection, content-finalization and active-round locks, secret filtering, six challenge slots/per-team stable randomized order, password checks, victim/word rewards and duplicate prevention, R1 dependency, five other usable challenges, persistence/isolation, final phrase validation/persistence/idempotence, and no automatic R3 activation.
+- Existing hosted authentication regression and combined Classic Sudoku/Round 1 suite passed. The local browser verified both participant and organizer route gates. Signed-in gameplay UI remains for manual visual review.
+- Test-created sessions were revoked, teams suspended, test events cancelled and synthetic organizer role deactivated. The existing review team and progress were untouched; no project data was deleted.
+- `npm.cmd run lint`, `npm.cmd run build`, `node --check supabase/tests/round2-password-breaker.remote.mjs`, and `git diff --check` passed. Build retains the >500 kB chunk warning; Git emitted line-ending warnings. No commit or push was made.
 
 ## 5. Verified Production State
 

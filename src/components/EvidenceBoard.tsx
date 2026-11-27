@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Fingerprint, LoaderCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
-type Unlock = { victim_number: number; puzzle_type: string }
+type Unlock = { victim_number: number; puzzle_type: string; slot?: number }
 
 const victims = Array.from({ length: 18 }, (_, index) => index + 1)
 
@@ -51,9 +51,13 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
         .order('victim_number')
       if (!active) return
       if (error || !Array.isArray(data)) { setLoadState('error'); return }
-      setUnlocks(data.filter((row): row is Unlock => Number.isInteger(row.victim_number)
+      const round1 = data.filter((row): row is Unlock => Number.isInteger(row.victim_number)
         && row.victim_number >= 1 && row.victim_number <= 6
-        && typeof row.puzzle_type === 'string'))
+        && typeof row.puzzle_type === 'string')
+      const { data: round2, error: round2Error } = await supabase.from('team_round2_evidence_unlocks').select('victim_number,slot').order('victim_number')
+      if (!active) return
+      const round2Rows: Unlock[] = !round2Error && Array.isArray(round2) ? round2.filter(row => Number.isInteger(row.victim_number) && row.victim_number >= 7 && row.victim_number <= 12 && Number.isInteger(row.slot)).map(row => ({ victim_number: row.victim_number, puzzle_type: `round2-slot-${row.slot}`, slot: row.slot })) : []
+      setUnlocks([...round1, ...round2Rows])
       setLoadState('ready')
     }
     void loadUnlocks()
@@ -71,7 +75,7 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
 
       {participantView && loadState === 'loading' && <p className="round1-save-status" role="status"><LoaderCircle className="round1-spinner" size={15} /> RESTORING TEAM DISCOVERIES</p>}
       {participantView && loadState === 'error' && <p className="round1-feedback" role="alert">Team discoveries could not be restored. Retry after the secure evidence service is available.</p>}
-      {participantView && loadState === 'ready' && <p className="round1-save-status" role="status">{unlockedVictims.size} / 6 DEMONSTRATION VICTIM FILES UNLOCKED</p>}
+      {participantView && loadState === 'ready' && <p className="round1-save-status" role="status">{unlockedVictims.size} / 18 DEMONSTRATION VICTIM FILES UNLOCKED</p>}
 
       <div className="evidence-board" aria-label="Investigation evidence board with 18 unidentified victim positions">
         <div className="board-grid-markings" aria-hidden="true" />
