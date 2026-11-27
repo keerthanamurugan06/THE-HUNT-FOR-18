@@ -21,7 +21,11 @@ import {
 
 import { AmbienceControl } from './components/AmbienceControl'
 import { EvidenceBoard } from './components/EvidenceBoard'
+import RequireTeamAuth from './components/RequireTeamAuth'
+import { TeamAuthProvider } from './context/TeamAuthContext'
 import Round1Page from './pages/Round1Page'
+import TeamHomePage from './pages/TeamHomePage'
+import TeamLoginPage from './pages/TeamLoginPage'
 
 type RoundCard = {
   number: string
@@ -376,22 +380,24 @@ function LoginPlaceholder({ title }: { title: string }) {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/round-1" element={<Round1Page />} />
-        <Route
-          path="/team-login"
-          element={<LoginPlaceholder title="TEAM LOGIN" />}
-        />
-        <Route
-          path="/organizer-login"
-          element={<LoginPlaceholder title="ORGANIZER LOGIN" />}
-        />
-        <Route
-          path="*"
-          element={<LoginPlaceholder title="PAGE NOT FOUND" />}
-        />
-      </Routes>
+      <TeamAuthProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/team-login" element={<TeamLoginPage />} />
+          <Route element={<RequireTeamAuth />}>
+            <Route path="/team" element={<TeamHomePage />} />
+            <Route path="/round-1" element={<Round1Page />} />
+          </Route>
+          <Route
+            path="/organizer-login"
+            element={<LoginPlaceholder title="ORGANIZER LOGIN" />}
+          />
+          <Route
+            path="*"
+            element={<LoginPlaceholder title="PAGE NOT FOUND" />}
+          />
+        </Routes>
+      </TeamAuthProvider>
     </BrowserRouter>
   )
 }

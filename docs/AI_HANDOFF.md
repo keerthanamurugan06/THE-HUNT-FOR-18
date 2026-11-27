@@ -64,20 +64,24 @@ Do not introduce unnecessary technologies without explaining their benefits and 
 
 ## 5. Current Project Stage
 
-**Stage:** Core database foundation completed; homepage and Classic Sudoku frontend prototype exist; broader application and backend implementation remain pending.
+**Stage:** Core schema, test authentication and Classic Sudoku save/restore/server verification are implemented and tested; remaining Round 1 variants and event features remain pending.
 
 The repository, planning documents, and initial core database migration have been created.
 
 At the time of this handoff:
 
 - React + Vite + TypeScript application exists, including a public homepage and a Classic Sudoku frontend prototype.
-- The production Supabase project `the-hunt-for-18` has the initial core migration applied.
+- The production Supabase project `the-hunt-for-18` has the initial core migration applied, as recorded in the initial milestone. It was not accessed during the current authentication work.
 - Local and remote migration histories match.
 - The public schema contains `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles`.
 - The migration is committed and pushed to GitHub.
 - The Git working tree was clean before the status-documentation update.
-- The Classic Sudoku progress migration has been drafted but is not yet validated; other gameplay migrations remain pending.
-- Authentication has not been implemented.
+- Test project `bfzlszktufjqlfiyknga` has migrations `20261122173709`, `20261123213000`, `20261126150000`, and `20261127120000` applied.
+- `team-login` and `provision-team` are deployed to the test project. The React app includes Team ID + access code sign-in, Supabase session restoration/logout and participant route guards.
+- Hosted Auth public signup is disabled on the test project. The remote authentication suite passed for login, provisioning authorization, throttling, session restoration/logout, protected routes and team isolation.
+- The test event is cancelled, teams are suspended and temporary sessions are revoked. Team-linked Auth rows and the audit actor identity remain because foreign keys and append-only audit records prevent deleting them; the organizer role was removed.
+- Classic Sudoku uses the existing progress table and `load_classic_sudoku()` / `complete_classic_sudoku()` RPCs. Remote tests passed for save/restore, clue protection, completion validation, completed-row protection and team isolation.
+- Remote Classic Sudoku test fixtures were retained without deleting rows: the event is cancelled, teams are suspended, sessions revoked and synthetic organizer account banned. Its organizer-role row, team progress and audit-linked rows remain in the test project.
 - Participant and organizer dashboards remain incomplete.
 - End-to-end application testing and production deployment remain pending.
 
@@ -89,7 +93,7 @@ Check `CURRENT_PROGRESS.md` before assuming anything has changed.
 
 - Four-round continuous investigation experience.
 - One integrated web application.
-- Organizer-created teams and participant self-registration with approval.
+- Organizer-authorized team provisioning; no public participant registration. Participants sign in with Team ID + access code and use a mapped Supabase Auth identity.
 - One laptop/device per team.
 - Team ID + unique access code for participant login.
 - Supabase as backend.
@@ -168,10 +172,9 @@ Continue according to `NEXT_STEPS.md`.
 The next implementation session should:
 1. Inspect the existing repository and planning documents.
 2. Continue implementation of the existing React + Vite + TypeScript foundation.
-3. Create a separate Supabase cloud test project and validate pending database migrations there.
-4. Implement trusted team and organizer provisioning.
-5. Implement authentication and protected route boundaries.
-6. Add and validate remaining database migrations in the test environment after reviewing approved gameplay decisions.
+3. Replace the static timer display only after the authoritative timer behavior is approved and available.
+4. Connect Classic Sudoku completion to the approved evidence workflow when that backend is available.
+5. Implement other Sudoku variants only after their detailed rules and puzzle data are approved.
 
 The event is scheduled for 28 November 2026. Prioritize a working, tested MVP over optional features.
 

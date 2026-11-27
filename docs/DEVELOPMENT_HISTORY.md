@@ -107,6 +107,56 @@ Prepared:
 
 Record actual credit usage after each development session when available.
 
+## Team Authentication Milestone 1
+
+**Date:** 27 November 2026
+
+**Phase:** Participant authentication backend and frontend
+
+**Implementation Summary:**
+- Confirmed migrations `20261122173709`, `20261123213000`, and `20261126150000` applied to the separate test project `bfzlszktufjqlfiyknga`.
+- Applied `20261127120000_team_login_throttling.sql` and deployed `team-login` and `provision-team` to that project only.
+- Added organizer-authorized provisioning of internal Auth identities, stored bcrypt access-code verification, generic login failures, HMAC-fingerprinted attempt throttling, participant Supabase sessions, session restoration/logout and route guards.
+- Added a remote test harness that refuses to create fixtures unless hosted signup is disabled; test teams are suspended because append-only audit rows prevent deleting team records. The synthetic organizer's role is removed after the test, while its Auth row must remain because the audit actor foreign key restricts deletion.
+- Disabled and verified hosted Auth public signup on the test project (`disable_signup=true`).
+- Fixed the `bcryptjs` default-export imports after runtime logs exposed boot failures; deployed both corrected functions and reran the remote tests.
+- Remote tests passed for Auth restriction, authorized/unauthorized provisioning, valid/invalid sign-in, session persistence/restoration, protected routes, team-row/hash isolation, rate limiting and logout.
+- The test harness suspended both teams, cancelled its test event, revoked temporary sessions, and removed temporary non-organizer users and the organizer role. Team-linked Auth identities and the synthetic audit actor remain due existing foreign-key and append-only audit constraints.
+- Production project `wmzgcfnsgqtznueqbfzi` was not contacted or modified. No changes were committed or pushed.
+
+**Files Created or Modified:** Authentication frontend/context, login and provisioning Edge Functions, shared function helpers, throttling/provisioning migration, remote test harness, Supabase function config, and project progress documentation.
+
+**Tests Performed:** `npm.cmd run build` passed; `npm.cmd run lint` passed; `git diff --check` passed with Git line-ending notices. Build reports one output chunk just over 500 kB.
+
+**Test Results:** Remote authentication fixture suite passed. Build, lint and syntax checks passed. Build reports a JavaScript chunk just over 500 kB.
+
+**Remaining Work:** Integrate Classic Sudoku save/restore and server-side completion in the app; complete broader event-flow tests.
+
+## Classic Sudoku Integration Milestone
+
+**Date:** 27 November 2026
+
+**Phase:** Round 1 Classic Sudoku persistence and completion validation
+
+**Implementation Summary:**
+- Replaced the frontend's hard-coded board/solution with the existing `load_classic_sudoku()` RPC. The client receives only public givens and the current team's board.
+- Added debounced board persistence through the RLS-protected `team_sudoku_progress` table, save progress/error/retry states, restoration after client recreation, and a leave-page warning while changes are unsaved.
+- Puzzle completion now calls `complete_classic_sudoku()`. The client reports success only after the RPC verifies the saved board; completed rows cannot be edited through participant RLS.
+- No migration or function deployment was required. The existing Classic Sudoku progress migration was already applied to the test project.
+- The remote Classic Sudoku fixture suite passed for signup configuration, organizer provisioning, initialized puzzle load, progress save/restore, clue protection, incomplete/correct completion, completed progress locking, unauthenticated completion rejection and two-team isolation.
+- The suite created no deletions. It revoked temporary sessions, suspended test teams and cancelled its test event. Fixture records remain; the synthetic organizer account was banned and its organizer role row remains.
+- Production was not accessed. No commit or push was made.
+
+**Files Created:** `supabase/tests/classic-sudoku.remote.mjs`, `supabase/tests/lock-classic-test-organizers.remote.mjs`.
+
+**Files Modified:** `src/pages/Round1Page.tsx`, `src/pages/Round1Page.css`, `docs/ROUND_1.md`, `docs/CURRENT_PROGRESS.md`, `docs/NEXT_STEPS.md`, `docs/AI_HANDOFF.md`, `docs/DATABASE_DESIGN.md`, `docs/DEVELOPMENT_HISTORY.md`.
+
+**Tests Performed:** `npm.cmd run build`, `npm.cmd run lint`, `node --check` for the remote fixture scripts, `git diff --check`, and the test-project remote Classic Sudoku suite.
+
+**Test Results:** All passed. The build retains a JavaScript chunk-size warning above 500 kB.
+
+**Remaining Work:** Server-authoritative timer and evidence integration; remaining Sudoku variants require their approved rules and puzzle content. No other rounds were implemented.
+
 ### Development History Entry Template
 
 For every future milestone, record:

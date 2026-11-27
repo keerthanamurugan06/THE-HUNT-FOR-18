@@ -108,8 +108,8 @@ Use the selected stack unless a technical limitation is identified and approved 
 ### 7. Important System Decisions
 
 1. One integrated application for the entire event.
-2. Organizer-created teams and participant self-registration requests.
-3. Self-registration requires organizer approval.
+2. Organizers provision teams; participants cannot register themselves.
+3. Team Auth identities are created only by the organizer-authorized provisioning flow.
 4. Team login uses Team ID and a unique access code.
 5. One laptop/device per team.
 6. One internal Supabase Auth account per team.

@@ -20,8 +20,9 @@ Prioritize essential functionality, security, testing and deployment over option
 - Finalize maze structure and final objective.
 
 ### Technical decisions
-- Expand the verified core schema into the remaining gameplay-specific MVP tables.
-- Define and implement trusted team and organizer provisioning.
+- Organizer-authorized team provisioning and Team ID + access code login are implemented and remotely verified on the test project; hosted public signup is disabled there.
+- Classic Sudoku save, restoration and server-side completion validation are implemented and remotely tested on the test project.
+- Expand the verified core schema into remaining gameplay-specific MVP tables as needed.
 - Finalize submission and protected-answer operations.
 - Define submission and timer expiry behavior.
 - Establish development and production environments.
@@ -32,19 +33,19 @@ Prioritize essential functionality, security, testing and deployment over option
 - Migration successfully applied to production project `the-hunt-for-18`.
 - Local and remote migration histories match.
 - `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles` exist in the public schema.
+- Migrations `20261122173709`, `20261123213000`, and `20261126150000` were confirmed applied to test project `bfzlszktufjqlfiyknga`; the initial core migration was previously applied to production as documented above.
+- Migration `20261127120000` is applied to the test project only; `team-login` and `provision-team` are deployed there.
+- Authentication frontend and participant route guards are implemented. Hosted Auth public signup is disabled on the test project, and the remote authentication suite passed. Test teams are suspended, temporary sessions revoked and the test event cancelled; team-linked and audit-actor Auth rows remain because existing foreign keys and append-only audit records prevent their deletion.
 - Migration is committed and pushed; the Git working tree was clean before this documentation update.
 
 This is only the core foundation. The full database design and gameplay schema are still pending.
 
 ## 3. Immediate Development Priorities
 
-1. Reconcile project documentation with the current repository implementation.
-2. Create a separate Supabase cloud test project.
-3. Inspect and validate the pending Classic Sudoku progress migration in the test project.
-4. Complete and verify essential Round 1 backend integration.
-5. Implement only essential participant and organizer workflows.
-6. Test the complete event flow, including team access, timers, answer validation and error recovery.
-7. Deploy only after the tested build and production configuration are verified.
+1. Complete broader participant and organizer workflow testing on the test project.
+2. Implement server-authoritative timers and evidence delivery only when their required behavior and data are approved/available.
+3. Implement other Sudoku variants only after their detailed rules and puzzle content are approved.
+4. Do not deploy to production without separate explicit approval.
 
 Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow
@@ -89,9 +90,7 @@ A feature is complete only when:
 **Target date:** 27 November 2026 or next implementation session
 
 First tasks:
-1. Continue implementation of the existing React + Vite + TypeScript application.
-2. Create a separate Supabase cloud test project.
-3. Validate the pending Classic Sudoku progress migration in the test environment.
-4. Complete essential Round 1 backend integration.
-5. Implement essential participant and organizer workflows.
-6. Test the complete event flow and verify the production build before deployment.
+1. Review the current uncommitted changes and verified test-project state.
+2. Review this test-project Classic Sudoku milestone and verify the UI against the remote save/restore tests.
+3. Define the next approved scope before implementing additional Round 1 variants or other rounds.
+4. Continue testing only against test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.

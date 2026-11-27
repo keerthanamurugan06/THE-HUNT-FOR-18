@@ -383,6 +383,186 @@ body { background: var(--hunt-black); color: var(--hunt-white); }
 .login-placeholder > p:not(.eyebrow) { color: #91897e; margin-top: 12px; }
 .back-link { color: var(--hunt-yellow); margin-top: 30px; text-decoration: none; }
 
+.team-login-page, .team-home-page, .auth-state-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: var(--hunt-black);
+}
+.team-login-page { display: flex; flex-direction: column; }
+.login-grid {
+  position: absolute;
+  inset: 18px 0 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: linear-gradient(rgba(216,183,131,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(216,183,131,.10) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at center, #000 15%, transparent 78%);
+}
+.login-header, .team-home-header {
+  position: relative;
+  z-index: 1;
+  min-height: 76px;
+  width: 100%;
+  padding: 14px max(22px, calc((100vw - 1180px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid rgba(216,183,131,.17);
+}
+.login-classification, .login-card-topline, .login-footer, .team-home-id {
+  color: #8e8579;
+  font: 600 .62rem "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+}
+.login-classification { display: inline-flex; align-items: center; gap: 8px; }
+.login-classification svg { color: var(--hunt-yellow); }
+.team-login-card {
+  position: relative;
+  z-index: 1;
+  width: min(480px, calc(100% - 32px));
+  margin: auto;
+  padding: clamp(24px, 5vw, 44px);
+  border: 1px solid rgba(216,183,131,.24);
+  border-top: 2px solid var(--hunt-red);
+  background: linear-gradient(145deg, rgba(21,18,14,.98), rgba(12,11,10,.97));
+  box-shadow: 0 24px 90px rgba(0,0,0,.55);
+}
+.login-card-topline { display: flex; justify-content: space-between; gap: 10px; font-size: .55rem; }
+.login-emblem {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin: 30px auto 20px;
+  border: 1px solid rgba(181,31,31,.75);
+  color: var(--hunt-red);
+  background: rgba(181,31,31,.08);
+  transform: rotate(45deg);
+}
+.login-emblem svg { transform: rotate(-45deg); }
+.team-login-card > .eyebrow { text-align: center; }
+.team-login-card h1, .team-home-content h1, .auth-state-card h1 {
+  margin-top: 8px;
+  text-align: center;
+  font: 4rem/1 "Bebas Neue", Impact, sans-serif;
+  letter-spacing: .04em;
+}
+.team-login-card h1 span, .team-home-content h1 span { color: var(--hunt-red); }
+.login-intro, .login-security-note {
+  color: #9b9387;
+  text-align: center;
+  font: .9rem/1.6 "Special Elite", Georgia, serif;
+}
+.login-intro { margin: 14px 0 28px; }
+.team-login-form { display: flex; flex-direction: column; gap: 10px; }
+.team-login-form label {
+  margin-top: 8px;
+  color: var(--hunt-paper);
+  font: 600 .65rem "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+}
+.team-login-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid rgba(216,183,131,.26);
+  border-radius: 0;
+  outline: none;
+  color: var(--hunt-white);
+  background: #0b0a09;
+  font: .84rem "JetBrains Mono", monospace;
+}
+.team-login-form input:focus { border-color: var(--hunt-yellow); box-shadow: 0 0 0 2px rgba(245,185,27,.12); }
+.team-login-form input:disabled { opacity: .62; }
+.team-login-form input::placeholder { color: #625b52; }
+.login-submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--hunt-red);
+  color: #fff;
+  background: var(--hunt-red);
+  cursor: pointer;
+  font: 600 .7rem "JetBrains Mono", monospace;
+  letter-spacing: .1em;
+}
+.login-submit:hover:not(:disabled) { background: #8f1717; }
+.login-submit:disabled { opacity: .72; cursor: wait; }
+.login-spinner { animation: login-spin 900ms linear infinite; }
+@keyframes login-spin { to { transform: rotate(360deg); } }
+.auth-error { margin-top: 12px; color: #ff9a87; font: .78rem/1.5 "JetBrains Mono", monospace; }
+.login-security-note { margin-top: 20px; color: #766f64; font-size: .72rem; }
+.login-back-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-top: 22px;
+  color: var(--hunt-yellow);
+  text-decoration: none;
+  font: .62rem "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+}
+.login-footer { position: relative; z-index: 1; padding: 22px; text-align: center; font-size: .55rem; }
+.auth-state-page { display: grid; place-items: center; padding: 24px; }
+.auth-state-card {
+  width: min(520px, 100%);
+  padding: clamp(26px, 5vw, 44px);
+  border: 1px solid rgba(216,183,131,.22);
+  border-top: 2px solid var(--hunt-yellow);
+  background: #12100e;
+  text-align: center;
+}
+.auth-state-mark {
+  display: block;
+  width: 25px;
+  height: 25px;
+  margin: 0 auto 18px;
+  border: 2px solid rgba(245,185,27,.26);
+  border-top-color: var(--hunt-yellow);
+  border-radius: 50%;
+  animation: login-spin 900ms linear infinite;
+}
+.auth-state-card h1 { font-size: clamp(2.6rem, 8vw, 4rem); }
+.auth-state-card > p:not(.eyebrow):not(.auth-error) { margin-top: 14px; color: #9b9387; font: .86rem/1.6 "Special Elite", Georgia, serif; }
+.auth-state-card .modal-button { display: inline-flex; justify-content: center; align-items: center; min-height: 46px; text-decoration: none; }
+.auth-secondary-button {
+  display: block;
+  margin: 18px auto 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(216,183,131,.25);
+  color: var(--hunt-paper);
+  background: transparent;
+  cursor: pointer;
+  font: .62rem "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+}
+.team-home-page { background: radial-gradient(ellipse at 50% 40%, rgba(181,31,31,.12), transparent 52%), var(--hunt-black); }
+.team-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(216,183,131,.28);
+  color: var(--hunt-paper);
+  background: transparent;
+  cursor: pointer;
+  font: .65rem "JetBrains Mono", monospace;
+  letter-spacing: .06em;
+}
+.team-home-content { position: relative; z-index: 1; width: min(760px, calc(100% - 32px)); margin: 14vh auto 0; text-align: center; }
+.team-home-content > .eyebrow { display: flex; justify-content: center; align-items: center; gap: 8px; color: var(--hunt-yellow); }
+.team-home-content h1 { margin-top: 20px; font-size: clamp(3rem, 9vw, 5.5rem); }
+.team-home-id { margin-top: 20px; color: var(--hunt-paper); }
+.team-home-copy { max-width: 480px; margin: 20px auto 0; color: #968e82; font: .95rem/1.7 "Special Elite", Georgia, serif; }
+.team-round-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 34px; background: var(--hunt-red); color: #fff; }
+
 @keyframes subtle-bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(5px); }
@@ -410,6 +590,11 @@ body { background: var(--hunt-black); color: var(--hunt-white); }
   .nav-links a { font-size: 0.64rem; }
   .ambience-control span { display: none; }
   .nav-login { padding-inline: 10px; font-size: 0.64rem; }
+  .login-header, .team-home-header { min-height: 64px; padding-inline: 14px; }
+  .login-classification { font-size: .48rem; }
+  .team-login-card h1 { font-size: 3.4rem; }
+  .login-card-topline { font-size: .46rem; }
+  .team-home-content { margin-top: 10vh; }
   .hero-section { min-height: 680px; padding: 76px 16px 50px; }
   .hero-case-label { top: 18px; font-size: 0.56rem; }
   .hero-content h1 { font-size: clamp(4.2rem, 24vw, 6.3rem); }

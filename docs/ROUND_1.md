@@ -4,7 +4,15 @@
 Participants solve 9×9 Sudoku variants to uncover investigation evidence.
 
 **Provisional duration:** 20 minutes  
-**Status:** Six-variation Open Challenge Mode confirmed; detailed puzzle configuration pending.
+**Status:** Six-variation Open Challenge Mode confirmed. Classic Sudoku persistence and server-side completion are integrated and tested on the test project; other variants, timer and evidence delivery remain pending.
+
+### Current Classic Sudoku Implementation
+- Starting givens and saved progress load through `load_classic_sudoku()`.
+- Board edits autosave to the authenticated team's progress row; refresh restoration is verified.
+- Original clues are enforced by a database trigger.
+- Completion is accepted only after `complete_classic_sudoku()` verifies the saved board server-side.
+- The solution is not included in frontend source. Evidence delivery and the server-authoritative round timer are not integrated yet.
+- This implementation covers Classic only. It does not implement the other five variants or complete Round 1.
 
 ## Gameplay
 - Six Sudoku variations are included: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Combined.

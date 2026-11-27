@@ -30,8 +30,8 @@ This document records approved project decisions. Do not change an approved deci
 | ID | Decision | Status |
 |---|---|---|
 | D014 | Organizers can create teams. | CONFIRMED |
-| D015 | Participants can submit self-registration requests. | CONFIRMED |
-| D016 | Self-registration requests require organizer approval. | CONFIRMED |
+| D015 | Participant self-registration is disabled; organizers provision team identities. | CONFIRMED |
+| D016 | Public Supabase Auth signup is disabled; participant identities are created only by trusted organizer provisioning. | CONFIRMED |
 | D017 | Team login uses Team ID and a unique access code. | CONFIRMED |
 | D018 | Each team has one internal Supabase Auth account. | CONFIRMED |
 | D019 | One laptop/device is used per team during gameplay. | CONFIRMED |

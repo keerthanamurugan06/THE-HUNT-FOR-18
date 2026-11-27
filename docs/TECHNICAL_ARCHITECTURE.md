@@ -76,10 +76,9 @@ Dependencies must be installed only when needed and approved by the project owne
 - Do not rely only on hiding admin pages in the frontend.
 
 ### Registration
-- Organizers can create teams directly.
-- Participants can submit registration requests.
-- Registration requests remain pending until approved.
-- Approval must happen before team account provisioning.
+- Organizers provision teams through a trusted server-side workflow.
+- Participants cannot self-register or create Auth accounts.
+- Team eligibility is checked by the server during login and protected access.
 
 ## 5. Database and Backend Responsibilities
 

@@ -116,18 +116,12 @@ Maps Supabase Auth users to organizer permissions.
 Roles and privileged actions are checked server-side. The frontend is not an
 authorization boundary.
 
-#### `registration_requests`
+#### `registration_requests` (superseded proposal)
 
-Public registration requests awaiting organizer review.
-
-- `id`, `event_id` (foreign key), `team_name`
-- `participant_details` (JSONB), `status`
-- `reviewed_by`, `reviewed_at`, `review_notes`
-- `created_at`, `updated_at`
-
-The JSONB field holds the approved registration form shape until that form is
-finalized. Approval and team-account provisioning are separate privileged,
-transactional operations.
+This table appeared in an earlier database-design draft. It is not part of the
+current approved flow: participants cannot self-register, and organizers provision
+team identities directly. Do not implement or expose this table unless the project
+owner explicitly changes that decision.
 
 ### 3.3 GAMEPLAY
 
@@ -461,7 +455,7 @@ team/round queries and timer round lookups.
 
 The application uses secure database functions or Supabase Edge Functions for:
 
-- registration approval and team provisioning;
+- organizer-authorized team provisioning (public participant registration is disabled);
 - round activation, timer control and configuration freezing;
 - answer/submission validation and attempt-limit enforcement;
 - idempotent evidence unlocking and unlock-verified evidence retrieval;
@@ -475,7 +469,8 @@ The application uses secure database functions or Supabase Edge Functions for:
 The following remain explicitly unresolved and must be approved before migrations
 or gameplay-specific implementation:
 
-- Exact registration fields and participant identity requirements.
+- Whether participant registration requests should ever be introduced later; the
+  current approved flow is organizer provisioning and requires no participant email.
 - Final question, evidence, answer and protected-content formats.
 - Round 1 puzzle count, difficulty distribution, points, attempt limits and
   penalties.
