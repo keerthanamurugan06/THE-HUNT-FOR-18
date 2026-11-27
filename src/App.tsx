@@ -28,6 +28,8 @@ import TeamHomePage from './pages/TeamHomePage'
 import TeamLoginPage from './pages/TeamLoginPage'
 import Round2Page from './pages/Round2Page'
 import OrganizerRound2Page from './pages/OrganizerRound2Page'
+import Round3Page from './pages/Round3Page'
+import OrganizerRound3Page from './pages/OrganizerRound3Page'
 import RequireOrganizerAuth, { OrganizerLoginPage } from './components/RequireOrganizerAuth'
 
 type RoundCard = {
@@ -106,9 +108,9 @@ function HomePage() {
     },
     {
       number: '03',
-      name: 'BLIND CODE',
-      detail: 'Trust the unknown.',
-      classification: 'ROUND 03 • TEAM ACCESS',
+      name: 'THE CRYPTO PROTOCOL',
+      detail: 'Break the cipher.',
+      classification: 'ROUND 03 • CRYPTOGRAPHIC ACCESS',
     },
     {
       number: '04',
@@ -285,6 +287,10 @@ function HomePage() {
                   navigate('/round-1')
                   return
                 }
+                if (round.number === '03') {
+                  navigate('/round-3')
+                  return
+                }
 
                 setSelectedRound(round)
               }}
@@ -391,10 +397,12 @@ function App() {
             <Route path="/team" element={<TeamHomePage />} />
             <Route path="/round-1" element={<Round1Page />} />
             <Route path="/round-2" element={<Round2Page />} />
+            <Route path="/round-3" element={<Round3Page />} />
           </Route>
           <Route path="/organizer-login" element={<OrganizerLoginPage />} />
           <Route element={<RequireOrganizerAuth />}>
             <Route path="/organizer/round-2" element={<OrganizerRound2Page />} />
+            <Route path="/organizer/round-3" element={<OrganizerRound3Page />} />
           </Route>
           <Route
             path="*"

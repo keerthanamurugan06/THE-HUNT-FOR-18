@@ -1,4 +1,4 @@
-﻿# THE HUNT FOR 18 — Development Roadmap
+# THE HUNT FOR 18 — Development Roadmap
 
 **Last updated:** 27 November 2026
 **Event date:** 28 November 2026
@@ -159,22 +159,17 @@ Tasks:
 - [ ] Do not use Round 2 completion or phrase entry to gate Round 3 participation.
 - [ ] Preserve progress.
 
-### Round 3 — BLIND CODE: The Black Box
+### Round 3 — THE CRYPTO PROTOCOL
 
 Tasks:
-- [ ] Finalize three black-box challenge programs and their difficulty progression.
-- [ ] Prepare initial input-output examples for each challenge.
-- [ ] Define additional input experimentation rules and limits.
-- [ ] Implement the actual Python code editor interface.
-- [ ] Implement restricted and secure Python execution.
-- [ ] Keep hidden logic and test cases server-side.
-- [ ] Implement hidden test-case validation.
-- [ ] Define optional hints and their point deductions.
-- [ ] Reveal one code fragment and two victims after each successful challenge.
-- [ ] Implement final unlock-code validation using all three fragments.
-- [ ] Do not gate Round 3 participation on earlier round completion.
-- [ ] Preserve team progress and hint usage.
-- [ ] Test execution limits, invalid submissions and security boundaries.
+- [x] Approve three challenge types: repeating-key XOR, multi-layer cryptography, and educational weak RSA.
+- [x] Implement local participant and organizer interface foundations and bounded crypto workbench.
+- [x] Draft team-scoped progress, hints, rewards, configuration and publication migration.
+- [ ] Obtain approval and apply the pending migration to the approved test project.
+- [ ] Verify challenge solvability, answer format normalization, rewards, hint idempotency, workspace autosave and team isolation in hosted integration tests.
+- [ ] Run authentication, Round 1 and Round 2 regressions and browser review.
+- [ ] Configure competition content and scoring only after owner approval.
+- [ ] Keep the existing Round 2 organizer interface and backend unchanged; its wizard conversion is deferred by owner decision (27 November 2026).
 Completion criteria:
 - Each round follows the approved design.
 - Progress is stored reliably.
@@ -183,7 +178,7 @@ Completion criteria:
 
 ---
 
-## Phase 7 — Organizer Controls, Timers, Scoring and Leaderboards
+## Phase 7 — NEXT: Central Organizer Dashboard, Timers, Scoring and Leaderboards
 
 **Objective:** Integrate the shared event systems.
 

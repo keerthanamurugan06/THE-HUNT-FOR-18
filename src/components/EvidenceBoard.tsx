@@ -57,7 +57,10 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
       const { data: round2, error: round2Error } = await supabase.from('team_round2_evidence_unlocks').select('victim_number,slot').order('victim_number')
       if (!active) return
       const round2Rows: Unlock[] = !round2Error && Array.isArray(round2) ? round2.filter(row => Number.isInteger(row.victim_number) && row.victim_number >= 7 && row.victim_number <= 12 && Number.isInteger(row.slot)).map(row => ({ victim_number: row.victim_number, puzzle_type: `round2-slot-${row.slot}`, slot: row.slot })) : []
-      setUnlocks([...round1, ...round2Rows])
+      const { data: round3, error: round3Error } = await supabase.from('team_round3_evidence_unlocks').select('victim_number,slot').order('victim_number')
+      if (!active) return
+      const round3Rows: Unlock[] = !round3Error && Array.isArray(round3) ? round3.filter(row => Number.isInteger(row.victim_number) && row.victim_number >= 13 && row.victim_number <= 18 && Number.isInteger(row.slot)).map(row => ({ victim_number: row.victim_number, puzzle_type: `round3-slot-${row.slot}`, slot: row.slot })) : []
+      setUnlocks([...round1, ...round2Rows, ...round3Rows])
       setLoadState('ready')
     }
     void loadUnlocks()

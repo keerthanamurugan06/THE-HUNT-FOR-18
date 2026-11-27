@@ -74,7 +74,11 @@ async function provisionTeam(organizerToken, eventId, suffix) {
     body: JSON.stringify(team),
   })
   const result = await response.json().catch(() => ({}))
-  assert.equal(response.status, 201)
+  if (response.status !== 201) {
+    const error = new Error('Temporary team provisioning was rejected.')
+    error.status = response.status
+    throw error
+  }
   assert.ok(result.team?.id)
   return { ...team, id: result.team.id }
 }
@@ -370,7 +374,9 @@ try {
   assert.ok(unauthenticatedVariantCompletion.error)
   report('unauthenticated clients cannot load or complete Round 1 puzzles')
 } catch (error) {
-  const safeCode = typeof error?.code === 'string' ? error.code : 'ASSERTION_OR_RUNTIME_ERROR'
+  const safeCode = typeof error?.cause?.code === 'string'
+    ? error.cause.code
+    : typeof error?.code === 'string' ? error.code : 'ASSERTION_OR_RUNTIME_ERROR'
   const safeHttpStatus = Number.isInteger(error?.status) ? error.status : undefined
   const ambiguousColumn = typeof error?.ambiguousColumn === 'string' ? error.ambiguousColumn : undefined
   process.stderr.write(`FAIL: ${currentCheck} at ${currentDetail} (code ${safeCode}${safeHttpStatus ? `, HTTP ${safeHttpStatus}` : ''}${ambiguousColumn ? `, ambiguous column ${ambiguousColumn}` : ''})\n`)

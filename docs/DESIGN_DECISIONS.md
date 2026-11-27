@@ -81,16 +81,16 @@ This document records approved project decisions. Do not change an approved deci
 | D039 | Each correctly solved challenge reveals one hidden word; all six words form the final key phrase. | CONFIRMED |
 | D040 | Final phrase attempts are unlimited, with no penalty for incorrect attempts. Round 2 completion or phrase entry does not gate Round 3 participation; round access is organizer-controlled. | CONFIRMED |
 
-### Round 3 - BLIND CODE
+### Round 3 - THE CRYPTO PROTOCOL (approved 27 Nov 2026; replaces BLIND CODE)
 
 | ID | Decision | Status |
 |---|---|---|
-| D041 | Round 3 uses black-box reverse engineering through input-output experimentation. | CONFIRMED |
-| D042 | Round 3 contains three progressively harder black-box challenges. | CONFIRMED |
-| D043 | Participants recreate hidden program behaviour using an actual Python code editor. | CONFIRMED |
-| D044 | Teams may request optional hints, which deduct points. | CONFIRMED |
-| D045 | Each completed challenge reveals one code fragment; all three fragments form the final unlock code. | CONFIRMED |
-| D046 | Solutions are checked against hidden test cases using restricted and secure server-side validation. | CONFIRMED |
+| D041 | Round 3 is an interactive cryptography investigation with three progressively difficult challenges. | CONFIRMED |
+| D042 | The challenges are repeating-key XOR with known plaintext (victims 13–14), multi-layer cryptography (15–16), and educational weak RSA (17–18). | CONFIRMED |
+| D043 | Round 3 does not include a Python editor, external code execution, or a code sandbox. The bounded workbench provides cryptographic and number-theory tools without automatic solving. | CONFIRMED |
+| D044 | Each challenge supports optional organizer-configured hints and deductions. Hint use and configured deductions are recorded server-side, but no score changes occur until the shared scoring system is implemented. | CONFIRMED |
+| D045 | Each completed challenge reveals two victims and one protected code fragment; all three fragments can be combined for final-code validation. | CONFIRMED |
+| D046 | Expected answers, hints, fragments, and final code remain protected server-side; challenge answers are validated server-side. Successful final-code submission never activates Round 4. | CONFIRMED |
 
 ### Round 4 - OPERATION: DEADLOCK
 
@@ -110,8 +110,13 @@ This document records approved project decisions. Do not change an approved deci
 | D056 | The organizer can start, pause, resume, extend and end rounds; timers and scoring are server-authoritative. | CONFIRMED |
 | D057 | Scoring changes apply equally to all teams and are audited. Leaderboards are released after each round, never live. | CONFIRMED |
 | D058 | Round 2 has six victim reveals, one for each completed challenge. | CONFIRMED |
-| D059 | Round 3 has three Python black-box challenges, each revealing two victims on completion. | CONFIRMED |
+| D059 | Round 3 has three cryptography challenges, each revealing two victims on completion. | CONFIRMED |
 | D060 | All 18 victim discoveries (six per preliminary round) persist on the same team-scoped Evidence Board. | CONFIRMED |
 | D061 | Optional Round 4 remains locked by default and requires organizer authorization. | CONFIRMED |
 | D062 | If event time is insufficient, the organizer may skip Round 4 and declare winners using cumulative Rounds 1–3 scores. | CONFIRMED |
 | D063 | If Round 4 runs, finalists missing essential clues receive evidence-recovery checkpoints; recovered evidence awards no retroactive marks. | CONFIRMED |
+| D064 | Organizers configure accepted answer formats, case sensitivity, whitespace normalization, and whether key, plaintext, or both are required. | CONFIRMED |
+| D065 | Round 3 organizer drafts are saved independently per challenge; publication is separate from round activation, and configuration freezes after round start. | CONFIRMED |
+| D066 | Round 3 demo challenges are temporary only. Competition questions and scoring/deduction values remain unfinalized until approved/configured. | CONFIRMED |
+| D067 | Defer the Round 2 organizer wizard conversion. Preserve the existing Round 2 interface, backend, questions, answers, validation rules, evidence, and participant progress unchanged. | CONFIRMED |
+| D068 | Finish Round 3 hosted integration and regression testing first. The next implementation priority is the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboards. | CONFIRMED |

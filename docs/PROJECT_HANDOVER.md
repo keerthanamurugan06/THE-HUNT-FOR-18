@@ -148,32 +148,21 @@ The Round 1 frontend and hosted backend support six variant boards, variant conf
 
 Exact challenge contents, hidden words, scoring and evidence dependency remain pending approval.
 
-### Round 3 — BLIND CODE
+### Round 3 — THE CRYPTO PROTOCOL (latest approved design)
 
-**Title:** BLIND CODE — The Black Box: Decode the Unknown
+Round 3 uses three interactive cryptography challenges, replacing BLIND CODE and the Python editor. It has no Python execution service or sandbox.
 
-Teams reverse-engineer three hidden programs by experimenting with inputs and outputs, identifying the underlying logic, and reproducing the behaviour using an actual Python code editor.
+- Challenge 1: repeating-key XOR, known plaintext, key reconstruction and message recovery; victims 13–14.
+- Challenge 2: multiple cipher/encoding layers and operation-order recovery; victims 15–16.
+- Challenge 3: educational weak RSA, factoring, totient, modular inverse and decryption; victims 17–18.
+- Each successful server-side validation reveals two victims and a code fragment. The three fragments combine into a final unlock code.
+- Optional hints and configured deductions are recorded server-side, without score changes until the shared scoring system exists.
+- All three are available together in a team-randomized order, with stable per-slot progress and workspace autosave.
+- A bounded browser workbench provides cryptographic and number-theory tools; it does not automatically solve challenges or execute arbitrary code.
+- Organizer drafts are edited and saved independently per question; publication is separate from round activation. Answers, hints, fragments, and final code are stored in the private schema. Configuration freezes at round start.
+- Final code verification never activates Round 4. Exact competition questions and scoring/deduction values are not finalized.
 
-Confirmed gameplay:
-- Three progressively harder black-box challenges.
-- Initial input-output examples.
-- Additional input experimentation.
-- Actual Python code editor.
-- Optional hints with point deductions.
-- Hidden test-case validation.
-- One code fragment revealed per completed challenge.
-- Two victims revealed per completed challenge (six total for Round 3).
-- Three fragments combine into the final unlock code.
-
-Technical direction:
-- React and TypeScript editor interface.
-- Restricted Python execution environment.
-- No arbitrary unrestricted code execution.
-- Hidden formulas and test cases protected from participants.
-- Server-side validation and score calculation.
-- Team progress and hint usage persisted through the backend.
-
-Exact challenge programs, supported syntax, hints, penalties, scoring and final unlock code remain to be prepared.
+**Current implementation status:** Local UI, workbench and migration draft exist. `20261127190000_round3_crypto_protocol.sql` is not applied. Its test-project dry run listed only this migration. Hosted tests wait for owner approval to apply it. See `docs/ROUND_3.md` and `docs/CURRENT_PROGRESS.md`.
 ### Round 4 — OPERATION: DEADLOCK
 
 A 2D pixel-art investigation maze.
@@ -199,7 +188,7 @@ The exact maze layout, checkpoints, penalties, scoring and final answer format r
 - Scoring changes apply equally to all teams and are audited. Leaderboards are released after each round, not live.
 - Round 1, Round 2 and Round 3 reveal six, six and six victims. All 18 discoveries persist on the same team-scoped Evidence Board.
 - Round 4 remains locked by default and requires organizer authorization. If event time is insufficient, the organizer can skip Round 4 and declare winners by cumulative Round 1–3 scores. If it runs, finalists missing essential clues receive evidence-recovery checkpoints with no retroactive marks.
-- Organizer dashboard, scoring/timer operations and Round 4 implementation are not part of the current Round 2 preparation step.
+- Keep the Round 2 organizer interface and backend unchanged; its wizard conversion is deferred. Complete Round 3 verification before beginning the centralized organizer dashboard, timers, shared scoring, and leaderboard milestone.
 
 ## 6. Database Status
 
@@ -243,8 +232,8 @@ The production project already contains test records. Do not modify or delete th
 | Team authentication | Pending |
 | Organizer authentication | Pending |
 | Organizer dashboard | Pending |
-| Round 2 | Pending |
-| Round 3 BLIND CODE | Design finalized; implementation pending |
+| Round 2 | Six-challenge engine and existing organizer/participant interfaces hosted-tested; wizard conversion deferred |
+| Round 3 THE CRYPTO PROTOCOL | Local MVP and hosted test harness prepared; migration remains unapplied after two failed attempts; latest correction awaits approval |
 | Round 4 maze | Pending |
 | Scoring system | Pending |
 | Server-authoritative event timers | Pending |
@@ -259,7 +248,7 @@ The production project already contains test records. Do not modify or delete th
 3. The server-authoritative Round 1 timer is not implemented.
 4. Victim discovery currently uses approved numbered demo placeholders.
 5. Browser verification of the participant flow remains pending.
-6. The homepage Round 3 description may still need updating to reflect the finalized Black Box Python challenge.
+6. Round 3 homepage naming now reflects THE CRYPTO PROTOCOL.
 7. Some older documentation conflicts with finalized gameplay decisions.
 
 These issues must be addressed through planned, verified changes.
@@ -268,13 +257,13 @@ These issues must be addressed through planned, verified changes.
 
 Current sequence:
 
-1. Round 2 implementation after Round 1 owner review.
-2. Round 3 implementation.
-3. Organizer dashboard, configurable durations/marks, server-authoritative timers/scoring and post-round leaderboards.
+1. Obtain approval to retry the corrected Round 3 migration on the test project, then complete hosted verification and regressions.
+2. Implement the centralized organizer dashboard, configurable durations/marks, server-authoritative timers and scoring, and post-round leaderboards.
+3. Keep the current Round 2 organizer interface and backend unchanged; wizard conversion remains deferred.
 4. Optional Round 4; keep locked unless authorized and apply the approved skip/recovery rules.
 5. End-to-end testing and deployment after explicit approval.
 
-Do not invent challenge content or scoring values. Organizer dashboard and Round 4 implementation are not part of the current preparation step.
+Do not invent challenge content or scoring values. The organizer dashboard follows Round 3 verification; Round 4 remains deferred.
 
 Implement one core feature at a time.
 

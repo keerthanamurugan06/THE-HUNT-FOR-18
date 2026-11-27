@@ -28,7 +28,7 @@ The event combines logical reasoning, observation, decoding, teamwork, communica
 |---|---|---|
 | 1 | DIGITAL LOGIC TRAP | Solve logic-based puzzles and uncover investigation evidence. |
 | 2 | PASSWORD BREAKER | Solve password challenges and discover hidden investigation words. |
-| 3 | BLIND CODE | Complete a partner-based challenge connected to the investigation. Gameplay is not finalized. |
+| 3 | THE CRYPTO PROTOCOL | Solve three cryptography challenges, recover six victim files and assemble a final unlock code. |
 | 4 | OPERATION: DEADLOCK | Navigate a digital investigation maze, connect the evidence and identify the killer. |
 
 **Storyline rule:** Rounds 1–3 progressively reveal information about the 18 victims. The final round focuses on connecting the investigation and identifying the killer.

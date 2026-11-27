@@ -1,119 +1,39 @@
-# ROUND 3 - BLIND CODE
+# Round 3 — THE CRYPTO PROTOCOL
 
-## Overview
+**Approved design:** 27 November 2026. This cryptography challenge replaces BLIND CODE and its Python editor. No Python execution or sandbox is part of Round 3.
 
-**Title:** BLIND CODE - The Black Box: Decode the Unknown
+**Implementation status:** Local participant and organizer interfaces, a bounded browser workbench, automated math checks, and a test-only migration draft are in progress. The migration has not been applied. The hosted integration suite has not run. All challenge content currently described below is temporary demonstration content only.
 
-**Status:** Gameplay and implementation approach finalized.
+## Challenge sequence
 
-**Duration:** Organizer-configurable; no fixed value approved.
+| Slot | Temporary demo challenge | Cryptographic subject | Victims |
+|---|---|---|---|
+| 1 | THE FRACTURED KEY | Repeating-key XOR, known plaintext, key reconstruction, message recovery | 13–14 |
+| 2 | THE ENCRYPTION LABYRINTH | Multiple encoding/cipher layers and operation ordering | 15–16 |
+| 3 | THE BROKEN TRUST | Small educational RSA: factorization, totient, modular inverse and decryption | 17–18 |
 
-Round 3 is a black-box reverse-engineering challenge. Teams investigate the behaviour of hidden programs by providing inputs, observing outputs, identifying the underlying logic, and recreating that logic using Python.
+All three challenges are available together after organizer authorization. Their display order is randomized once per team; stable slots preserve independent progress, workspace autosave, and navigation. Each successfully server-validated challenge reveals its two associated temporary victim placeholders and one protected code fragment. The final unlock code is validated server-side, has no penalty policy, and never activates Round 4.
 
-## Story Purpose
+## Workbench
 
-Teams discover a mysterious black-box device recovered during the investigation of the 18 victims.
+The local bounded workbench supports repeating-key XOR, ASCII byte conversion, binary/decimal/hex conversion, Base64, Vigenère, reversal, columnar transposition, bounded factorization, modular arithmetic, GCD, modular inverse, modular exponentiation, copy-between-tool operations, and a team scratchpad. It does not auto-solve challenge content or execute arbitrary code.
 
-The device contains hidden computational logic. Participants must investigate its behaviour and reconstruct the programs to unlock information needed to continue the investigation.
+## Organizer configuration
 
-The round must contribute meaningfully to the continuous storyline established in the earlier rounds.
+The Round 3 organizer wizard edits three independent challenge drafts. It supports participant-safe preview, draft saving, answer field requirements, accepted input formats, case/whitespace rules, optional hints and configured deductions, marks, paired victims, protected code fragments, and a separate final code step. Publishing is separate from round activation. Draft edits unpublish the content; configuration becomes immutable after the round starts or team progress exists.
 
-## Confirmed Gameplay
+Expected keys, plaintexts, hint text/deductions, fragments, and the final code are held in the migration's private schema and are omitted from participant challenge-load responses. Participant submissions use security-definer RPCs. Workspace and evidence rows are team-scoped; completion rewards and hint usage are idempotent. Hint deductions are recorded server-side, but scores are neither awarded nor deducted until the shared scoring system exists.
 
-1. Each team receives three progressively challenging black-box puzzles.
-2. Each puzzle initially displays a set of input-output examples.
-3. Teams can enter additional test inputs and observe the corresponding outputs.
-4. Teams analyse the observed patterns and deduce the hidden program logic.
-5. Teams recreate the logic using an actual Python code editor.
-6. Teams can run their programs against available examples.
-7. Submitted programs are checked against hidden test cases.
-8. Successfully completing a challenge reveals one code fragment.
-9. Successfully completing each challenge also reveals two victims; all six Round 3 discoveries persist on the shared team-scoped Evidence Board.
-10. All three code fragments must be combined to produce the final unlock code.
+## Migration and verification status
 
-Teams may participate in Round 3 even if Rounds 1 or 2 are incomplete. The organizer controls round access. Individual challenge marks and round duration must be configurable without code changes or redeployment; scoring and timers are server-authoritative.
+Draft migration: `supabase/migrations/20261127190000_round3_crypto_protocol.sql`.
 
-## Challenge Progression
+After Milestone 5 integration and regression verification, the next priority is the centralized organizer dashboard, timers, shared scoring, and post-round leaderboard. Keep the Round 2 organizer interface and backend unchanged; wizard conversion is deferred.
 
-| Challenge | Difficulty | Intended concepts |
-|---|---|---|
-| Black Box 01 | Easy | Basic arithmetic operations |
-| Black Box 02 | Medium | Multiple operations and expressions |
-| Black Box 03 | Hard | Conditions and logical operations |
+- Linked project reference was read from the local Supabase CLI project-ref file and matched approved test project `bfzlszktufjqlfiyknga` before both remote commands.
+- Supabase CLI migration history showed all prior local migrations matched the remote history and only `20261127190000_round3_crypto_protocol.sql` was pending.
+- `supabase db push --dry-run --linked` listed exactly `20261127190000_round3_crypto_protocol.sql`, with no seed or role changes. Two approved apply attempts failed: the first on the CASE expression and the second because the publish function's revoke signature omitted its boolean argument. Local review corrected both issues, the `demo_only` insert column, and the publish privilege signature. Remote history still lists the migration as pending; read-only catalog checks found no Round 3 objects. The corrected draft has not been reapplied. Production was not contacted.
+- The hosted Round 3 integration harness is prepared at `supabase/tests/round3-crypto-protocol.remote.mjs`, but it has not run. Approval to retry the latest correction is required before hosted tests and browser verification.
+- Local math/workbench checks, lint, build, and review of the SQL draft are the verification scope for this stage; refer to `CURRENT_PROGRESS.md` for the latest outcomes.
 
-Exact puzzle programs and test cases will be prepared separately.
-
-## Hint System
-
-- Teams may request optional hints.
-- Hints reveal additional examples or clues about the hidden logic.
-- Requesting hints deducts points from the team's score.
-- Hint penalties and mark values are configurable; do not invent values. Scoring changes must apply equally to all teams and be audited.
-
-## Python Editor
-
-- Participants use an actual Python code editor.
-- The editor supports the programming constructs required by the three challenges.
-- Participants must reproduce the hidden program's behaviour, not merely match the displayed examples.
-- Solutions must pass server-controlled hidden test cases.
-- Arbitrary unrestricted code execution must not be exposed to participants.
-- Use a restricted and securely isolated execution environment with appropriate execution-time and input limits.
-
-## Team and Device Rules
-
-- Two participants per team.
-- One laptop/device per team.
-- Both participants should be able to collaborate on testing, reasoning and writing the solution.
-
-## Technical Implementation
-
-**Frontend:** React and TypeScript.
-
-**Code editor:** Python editing interface.
-
-**Execution:** Restricted Python execution environment.
-
-**Backend:** Existing Supabase application infrastructure, with server-side validation and protected challenge definitions.
-
-**Progress tracking:** Store challenge completion, hint usage, attempts, revealed fragments and final completion against the relevant team.
-
-**Organizer controls:** Follow the existing organizer-controlled round activation and server-authoritative timer decisions.
-
-## Security and Validation
-
-- Hidden formulas and expected outputs must not be exposed in frontend code.
-- Hidden test cases must remain server-side.
-- Validate submitted solutions against hidden test cases.
-- Prevent teams from accessing another team's progress.
-- Apply hint penalties and completion rewards through trusted server-side logic.
-- Do not execute arbitrary participant code directly inside the Supabase database or unrestricted application server.
-
-## Pending Content Decisions
-
-The gameplay and editor approach are finalized. The following content and technical details remain to be prepared:
-
-- Exact three Python challenge programs.
-- Initial input-output examples for each challenge.
-- Supported Python syntax and execution restrictions.
-- Hidden test cases.
-- Hint content and point deductions.
-- Challenge scoring and completion rewards.
-- Three code fragments and the final unlock code.
-- Event-specific duration and challenge mark values; duration/marks are organizer-configurable without code changes or redeployment, and no score values are approved yet.
-
-## Implementation Rule
-
-Build and verify one feature at a time.
-
-Recommended implementation order:
-
-1. Prepare and verify the three challenge specifications.
-2. Design the Python editor interface.
-3. Implement restricted code execution.
-4. Implement input-output experimentation.
-5. Implement hidden test-case validation.
-6. Implement hints and score deductions.
-7. Implement code-fragment reveals and final unlock.
-8. Integrate team progress, organizer controls and event testing.
-
-Do not replace this approved gameplay with the previous blindfold communication concept or the Visual Code Builder.
+No competition questions, answer keys, scoring policy, deduction values, duration, storyline evidence, or Round 4 activation behavior have been finalized here. The organizer must replace demo content before publication.

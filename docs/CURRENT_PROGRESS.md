@@ -2,7 +2,7 @@
 
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
-**Development Status:** Team authentication, Round 1, and Round 2 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Round 2 is available for manual review. Admin controls and Round 4 remain deferred.
+**Development Status:** Team authentication, Round 1, and Round 2 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Round 3 local MVP and hosted test harness are prepared; its migration remains unapplied after failed attempts. After Round 3 verification, the next milestone is the centralized organizer dashboard, timers, shared scoring, and post-round leaderboard. Round 2 wizard conversion is deferred; Round 4 remains deferred.
 
 ## 1. Overall Status
 
@@ -15,7 +15,7 @@
 | Investigation storyline | Prepared |
 | Round 1 blueprint | Prepared |
 | Round 2 blueprint | Prepared |
-| Round 3 blueprint | Prepared; gameplay design finalized; implementation pending |
+| Round 3 blueprint | Updated to approved THE CRYPTO PROTOCOL design; local MVP implemented, hosted verification pending |
 | Final round blueprint | Prepared; detailed mechanics pending |
 | Design decisions register | Prepared |
 | Technical architecture | Prepared |
@@ -32,8 +32,8 @@
 | Testing | Build, lint, Sudoku rule checks, remote authentication regression and full hosted Round 1 integration pass |
 | Deployment | Authentication functions deployed to test project; production deployment not started |
 | Round 1 variants | Six-puzzle UI/rules, demo seeds, server validation and team-scoped victim unlock persistence are implemented and hosted-tested; browser visual verification and server timer remain pending |
-| Round 2 | Six-slot configurable engine and organizer/participant interfaces implemented; migration applied to test project; hosted integration and auth/Round 1 regression passed; local development now fails closed unless configured for the test project; signed-in browser walkthrough pending |
-| Round 3 | Three Python black-box challenges and two victims per challenge confirmed; implementation pending |
+| Round 2 | Six-slot configurable engine and existing organizer/participant interfaces implemented; migration applied to test project; hosted integration and auth/Round 1 regression passed; keep interface and backend unchanged; wizard conversion deferred |
+| Round 3 | Three cryptography challenges, workbench, team workspace UI, organizer wizard, and hosted integration harness implemented locally; migration remains unapplied after two failed attempts; local corrections await approval before another retry |
 | Event operations | Organizer-controlled access, cumulative top-six qualification, configurable marks/durations, server-authoritative timers/scoring and post-round leaderboards confirmed; dashboard pending |
 | Round 4 | Optional and locked by default; organizer authorization, skip and evidence-recovery decisions recorded; implementation deferred |
 
@@ -53,7 +53,7 @@
 
 ## 3. Pending Planning Work
 
-- Finalize Round 3 challenge programs, examples, hints, point deductions, scoring and final unlock code.
+- Replace temporary Round 3 demo challenges with organizer-approved competition content, hints and final code; marks and deduction values remain unapproved.
 - Finalize exact questions and evidence.
 - Finalize scoring and qualification rules.
 - Finalize final-round mechanics.
@@ -152,3 +152,15 @@ The following application and database work remains pending:
 - Local and remote migration histories: Matched
 - Public core tables: Verified present
 - Repository state: Migration committed and pushed; working tree was clean before this documentation update
+
+### Milestone 5 — Round 3 THE CRYPTO PROTOCOL (27 November 2026; local stage)
+
+- Owner decision replaces the earlier BLIND CODE/Python design with three cryptography challenges: repeating-key XOR (victims 13–14), layered cryptography (15–16), and educational weak RSA (17–18). No Python editor, external execution service, or sandbox was added.
+- Added participant and organizer routes. The participant UI contains randomized team challenge navigation, challenge content, known-plaintext panels, optional hints, server-validated answer submission, fragments/victim rewards, final-code submission, and team workspace autosave/restoration through planned RPCs.
+- Added bounded local tools for XOR, ASCII/radix conversion, Base64, Vigenère, reversal, columnar transposition, factorization, modular arithmetic, GCD, modular inverse, modular exponentiation, and scratchpad work.
+- Added a three-question organizer wizard with independent draft-save operations, participant-safe preview, configurable answer requirements/formats/normalization, hints/deduction records, marks, victims, protected fragments, separate final code, and separate publication controls.
+- Draft migration `20261127190000_round3_crypto_protocol.sql` defines private answer/configuration storage, team-scoped progress and evidence, per-team randomized order, idempotent hint usage, organizer-only draft/publication RPCs, participant-safe load/save/submit RPCs, and temporary demo templates. It is not applied.
+- Linked project ref matched `bfzlszktufjqlfiyknga`. The Supabase CLI showed all prior migrations matched and only `20261127190000_round3_crypto_protocol.sql` pending. Two approved apply attempts failed: first on CASE syntax; second on the publish RPC privilege signature. Migration history still lists it as pending, and read-only catalog checks found no Round 3 objects; no schema changes remain. Local review corrected the CASE expression, added the omitted `demo_only` insert column, and fixed the publish RPC signature. A dry run still lists only this migration. Reapplication requires owner approval for the corrected file. Production was not contacted.
+- Local checks: `node --experimental-strip-types scripts/test-crypto-tools.mjs`, `npm.cmd run lint`, and `npm.cmd run build` passed. The Vite bundle-size warning remains (573.04 kB minified). The final dry run reconfirmed test project `bfzlszktufjqlfiyknga` and listed only this migration. Hosted RPC, RLS, cross-team isolation, browser, auth regression, and Round 1/2 regressions are not yet verified for Round 3.
+- Hosted RLS/RPC/integration and browser verification remain blocked until the owner approves reapplying the corrected migration to the test project. The Round 3 hosted test harness is prepared but unrun. Hosted regression credentials were not loaded because the explicitly guarded credential procedure did not complete. Keep the current Round 2 interface and backend unchanged; defer its wizard conversion. After Round 3 verification, prioritize the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboards.
+- No commit, push, merge, or data deletion occurred.

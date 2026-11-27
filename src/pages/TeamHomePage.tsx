@@ -45,6 +45,9 @@ export default function TeamHomePage() {
         <Link to="/round-2" className="hunt-button team-round-link">
           OPEN ROUND 02 <ArrowRight size={18} />
         </Link>
+        <Link to="/round-3" className="hunt-button team-round-link">
+          OPEN ROUND 03 <ArrowRight size={18} />
+        </Link>
       </section>
       <EvidenceBoard participantView />
     </main>

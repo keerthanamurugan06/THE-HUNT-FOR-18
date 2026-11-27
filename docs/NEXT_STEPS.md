@@ -14,7 +14,7 @@ Prioritize essential functionality, security, testing and deployment over option
 ### Gameplay decisions
 - Round 2 and Round 3 victim counts and non-blocking progression are confirmed; keep exact victim/story content and all mark values uninvented until approved.
 - Prepare Round 2's six challenges and Round 1 evidence dependency for owner approval.
-- Round 3 challenge programs, I/O examples, supported Python syntax, execution limits, hints, code fragments and final unlock code remain to be specified.
+- Round 3's approved crypto design replaces the earlier Python proposal. Temporary demo templates are in the pending migration; actual competition questions and scoring/deduction values remain to be configured and approved.
 - Round 4 is optional; its maze and checkpoint content remain pending.
 
 ### Technical decisions
@@ -40,13 +40,16 @@ This is only the core foundation. The full database design and gameplay schema a
 
 ## 3. Immediate Development Priorities
 
-1. Complete manual visual review of the hosted-tested Round 2 interface, using existing authorized organizer/team access. No competition content is finalized.
-2. Round 3 implementation, including two victim reveals for each of its three challenges.
-3. Organizer dashboard, configurable round/challenge marks, server-authoritative timers and scoring, and after-round leaderboards.
-4. Optional Round 4; keep it locked unless authorized and support the approved skip/recovery policies.
-5. End-to-end testing and deployment after approval.
+1. Obtain approval to retry the latest corrected `20261127190000_round3_crypto_protocol.sql` on test project `bfzlszktufjqlfiyknga` only. The previous attempts left no migration record or Round 3 schema objects. Local corrections address the CASE syntax, insert column list, and publish function privilege signature.
+2. After successful application, verify the migration and Round 3 objects; run the hosted Round 3 integration/security suite, authentication/Round 1/Round 2 regressions, and browser review.
+3. Complete Milestone 5 and record actual verification results.
+4. Build the centralized organizer dashboard, configurable round/challenge marks, server-authoritative timers, shared scoring, and after-round leaderboards.
+5. Keep the existing Round 2 organizer interface and backend unchanged. The Round 2 wizard conversion is deferred.
+6. Optional Round 4; keep it locked unless authorized and support the approved skip/recovery policies. End-to-end testing and deployment follow after approval.
 
-Do not implement the organizer dashboard or Round 4 as part of Round 2 preparation. Do not invent challenge content or scoring values. Keep hosted work on test project `bfzlszktufjqlfiyknga`; never access production.
+Do not invent challenge content or scoring values. Keep hosted work on test project `bfzlszktufjqlfiyknga`; never access production. Round 3 migration `20261127190000_round3_crypto_protocol.sql` is a local draft and requires explicit approval before application.
+
+The Round 3 migration remains a local draft after two failed attempts; explicit approval is required before retrying the corrected file. Do not change the Round 2 organizer interface or backend while its wizard conversion is deferred.
 
 Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow
@@ -91,7 +94,8 @@ A feature is complete only when:
 **Target date:** 27 November 2026 or next implementation session
 
 First tasks:
-1. Review Round 2 manually; its migration and hosted integration tests are complete on the approved test project.
-2. Record owner feedback and address any approved Round 2 corrections.
-3. Do not begin Round 3 until the owner has reviewed Round 2 and approved the next milestone.
-4. Continue using only test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.
+1. Obtain explicit approval to apply the dry-run migration only to `bfzlszktufjqlfiyknga`.
+2. After the migration is approved and applied, run hosted Round 3 tests and existing regressions.
+3. After Round 3 verification, start the centralized organizer dashboard, timers, shared scoring and leaderboard milestone.
+4. Leave the Round 2 organizer wizard deferred; preserve the existing interface and backend.
+5. Continue using only test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.

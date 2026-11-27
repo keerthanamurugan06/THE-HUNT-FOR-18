@@ -284,3 +284,30 @@ For every future milestone, record:
 **Remaining Work:**
 
 Do not claim a feature is complete unless it has been implemented and verified.
+
+### Milestone 5 — Round 3 THE CRYPTO PROTOCOL (27 November 2026; local stage)
+
+**Approved change:** Replace the legacy BLIND CODE/Python editor design with three cryptography challenges: repeating-key XOR, layered cryptography, and educational weak RSA. Every challenge reveals two victim placeholders and one code fragment after server validation. Final-code success does not activate Round 4. Configured hint deductions are recorded but do not change scores before the shared scoring system.
+
+**Files added:** `src/lib/crypto-tools.ts`, `src/pages/Round3Page.tsx`, `src/pages/Round3Page.css`, `src/pages/Round3SaveExtra.css`, `src/pages/Round3EffectsExtra.css`, `src/pages/OrganizerRound3Page.tsx`, `src/pages/OrganizerRound3Page.css`, `src/pages/Round3OrganizerExtra.css`, `scripts/test-crypto-tools.mjs`, and `supabase/migrations/20261127190000_round3_crypto_protocol.sql` (draft only).
+
+**Files modified:** `src/App.tsx`, `src/pages/TeamHomePage.tsx`, `src/components/EvidenceBoard.tsx`, `package.json`, and Round 3/current-progress/roadmap/handoff/design/storyline documentation.
+
+**Implementation:** Added bounded local crypto operations, participant and organizer routes, team workspace autosave UI, per-team randomized stable challenge order design, answer-format and normalization configuration, organizer draft/publish wizard, server-side answer/hint/reward/final-code RPCs in the migration, and protected demo templates. Round 2 question management has not yet been converted to the wizard, preserving its implementation and stored progress.
+
+**Local tests:** `npm.cmd run test:crypto`, `npm.cmd run lint`, `npm.cmd run build`, and `git diff --check`. Crypto tests passed; lint passed after correction; build passed with existing large-bundle warning. The exact temporary demo answer strings and keys are absent from the built JavaScript bundle.
+
+**Database:** Reverified linked project ref `bfzlszktufjqlfiyknga`. CLI migration list showed prior histories aligned and only migration `20261127190000_round3_crypto_protocol.sql` pending. Two approved apply attempts failed; remote status remains pending and read-only catalog checks found no Round 3 objects. Corrected the CASE expression, omitted insert column, and publish function privilege signature locally; subsequent dry run still lists only that migration. Awaiting approval to retry. No production access or successful schema mutation occurred.
+
+**Remaining work:** Owner approval to retry the corrected test-only migration; then hosted RPC/RLS/team-isolation/autosave/hints/reward/final-code tests, existing auth/Round 1/Round 2 regressions, and browser verification. After Milestone 5 passes, start the centralized organizer dashboard, timers, shared scoring and post-round leaderboards. The Round 2 wizard is deferred.
+
+**Git:** No commit, push, merge, or reset.
+
+### Owner priority update — 27 November 2026
+
+- Deferred the Round 2 organizer wizard conversion. Keep the existing Round 2 interface, backend, content, answers, validation rules, evidence, and participant progress unchanged.
+- Confirmed Milestone 5 Round 3 integration and testing must be completed before the next major implementation milestone.
+- Set the next milestone to the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboards.
+- Updated `AGENTS.md` and relevant handoff, progress, roadmap, and round documentation. No gameplay code or database changes were made for this documentation update.
+
+**Hosted apply attempts (27 November 2026):** Reconfirmed test project ref `bfzlszktufjqlfiyknga`; dry-run listed only the approved migration. The first attempt failed at statement 31 with a CASE-expression syntax error; static review also found that insert omitted its `demo_only` column. The second attempt failed because the publish function privilege statements omitted its boolean parameter from the signature. Corrected all three issues locally. Remote migration history continues to show the migration pending, and read-only catalog checks returned no Round 3 schema objects. Awaiting approval before retry. No production access or successful hosted migration occurred.

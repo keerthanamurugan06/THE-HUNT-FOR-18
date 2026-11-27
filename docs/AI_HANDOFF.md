@@ -1,13 +1,22 @@
 # THE HUNT FOR 18 – AI Handoff Guide
 
-## Round 2 Milestone 4 current handoff (27 November 2026)
+## Milestone 5 Round 3 current handoff (27 November 2026)
+
+- Approved Round 3 design is THE CRYPTO PROTOCOL, replacing the older BLIND CODE/Python concept. See `docs/ROUND_3.md` and `docs/DESIGN_DECISIONS.md`.
+- Local participant and organizer routes, bounded crypto workbench, team workspace autosave UI, and three-question organizer draft wizard are implemented. Local math tests, lint, and build pass; build retains the >500 kB warning.
+- Migration `supabase/migrations/20261127190000_round3_crypto_protocol.sql` remains unapplied after two failed attempts. Remote history lists it as pending and read-only catalog checks found no Round 3 objects. Local fixes address CASE syntax, the secret insert column list, and the publish-function privilege signature; obtain approval before retrying.
+- A hosted Round 3 integration harness is prepared at `supabase/tests/round3-crypto-protocol.remote.mjs`, but it has not run. The test credential procedure did not finish; do not print credentials or bypass automatic review.
+- After migration success, run Round 3 hosted security/integration, auth/R1/R2 regressions, and browser verification. Then prioritize the centralized organizer dashboard, timers, shared scoring, and post-round leaderboards. Keep the existing Round 2 organizer interface/backend unchanged; its wizard conversion is deferred.
+- No production operation, data deletion, commit, or push occurred. Round 4 has not started. Do not access production.
+
+## Round 2 Milestone 4 archived handoff (27 November 2026)
 
 - Local participant and minimal organizer interfaces are implemented for database-driven Round 2 configuration and play. See `docs/ROUND_2.md` and migration draft `supabase/migrations/20261127180000_round2_password_breaker.sql`.
 - Migration `20261127180000_round2_password_breaker.sql` is applied and verified in history only on project `bfzlszktufjqlfiyknga` (`the-hunt-for-18-test`). Pre-apply ref verification and dry-run confirmed exactly one pending migration.
 - Hosted Round 2 integration, team-auth regression, and Classic/Round 1 regression all passed. Checks covered organizer authorization, configuration lock, participant secret filtering, order/progress persistence, answers/rewards/phrase, R1 dependency, cross-team isolation and unchanged Round 3 lock.
 - Browser verified unauthenticated participant and organizer route gates. Signed-in participant gameplay and organizer configuration screens still need manual visual review.
 - Lint, build, test-script syntax and diff checks passed. Build retains the >500 kB bundle warning; Git reports line-ending warnings.
-- Test-created sessions were revoked, teams suspended, test events cancelled and temporary organizer role deactivated. The existing review team/progress remains untouched. No data was deleted; no production operation, commit or push occurred. Do not start Round 3/4.
+- Test-created sessions were revoked, teams suspended, test events cancelled and temporary organizer role deactivated. The existing review team/progress remains untouched. No data was deleted; no production operation, commit or push occurred. Round 4 remains deferred.
 
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
@@ -48,7 +57,7 @@ Do not depend only on previous chat conversations.
 **Rounds:**
 1. DIGITAL LOGIC TRAP
 2. PASSWORD BREAKER
-3. BLIND CODE
+3. THE CRYPTO PROTOCOL
 4. OPERATION: DEADLOCK
 
 Participants progressively discover information about 18 victims through Rounds 1–3. The final round connects the evidence and identifies the killer.
@@ -127,7 +136,7 @@ Check `CURRENT_PROGRESS.md` before assuming anything has changed.
 - Participant access restricted to their own team.
 - Round 1 contains six simultaneous Sudoku variations in Open Challenge Mode.
 - Round 2 contains six independent password/code challenges.
-- Round 3 uses three progressive black-box reverse-engineering challenges with an actual Python code editor, hidden test validation and code fragments.
+- Round 3 uses three interactive cryptography challenges: repeating-key XOR, layered cryptography, and educational weak RSA. No Python editor or code execution is used.
 - Final round uses a 2D pixel-art maze.
 - Full maze map is visible but difficult to solve.
 - Wrong routes may contain mini-challenges before returning.
@@ -137,7 +146,7 @@ Consult `DESIGN_DECISIONS.md` for the complete decision register. Pending decisi
 
 ## 7. Important Unresolved Decisions
 
-- Round 3 challenge programs, input-output examples, Python execution limits, hint content, point deductions, scoring and final unlock code.
+- Competition Round 3 content, hint content, marks, deduction values and final unlock code.
 - Exact challenge content and answers.
 - Evidence distribution and extraction rules.
 - Scoring and penalties.
@@ -194,11 +203,10 @@ Verify actual usage through GitHub settings instead of assuming an allowance.
 Continue according to `NEXT_STEPS.md`.
 
 The next implementation session should:
-1. Inspect the existing repository and planning documents.
-2. Continue implementation of the existing React + Vite + TypeScript foundation.
-3. Replace the static timer display only after the authoritative timer behavior is approved and available.
-4. Connect Classic Sudoku completion to the approved evidence workflow when that backend is available.
-5. Implement other Sudoku variants only after their detailed rules and puzzle data are approved.
+1. Obtain approval to retry the corrected Round 3 migration on the approved test project only.
+2. After successful application, run hosted Round 3 integration/security, authentication, Round 1 and Round 2 regressions, and browser verification.
+3. Once Milestone 5 is verified, implement the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboard release.
+4. Leave the Round 2 organizer interface/backend unchanged; its wizard conversion is deferred.
 
 The event is scheduled for 28 November 2026. Prioritize a working, tested MVP over optional features.
 

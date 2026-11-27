@@ -51,27 +51,17 @@ Correct phrase submission unlocks its defined investigation content, but does no
 
 **Output:** Six hidden words, six victim discoveries and the phrase result.
 
-### Round 3 – BLIND CODE: The Black Box
+### Round 3 — THE CRYPTO PROTOCOL
 
-**Story purpose:** Recover and reverse-engineer a mysterious black-box program discovered during the investigation.
+**Story purpose:** Recover and interpret three protected cryptographic message files connected to victims 13–18.
 
-Teams receive input-output examples and experiment with additional inputs to uncover the hidden program logic.
+The challenges use repeating-key XOR with known plaintext, a multi-layer cipher/encoding path, and deliberately weak educational RSA. Participants use a bounded cryptography workbench to investigate and submit the recovered key and/or plaintext for server-side validation. No Python editor or external code execution is used.
 
-They must reproduce the observed behaviour by writing Python code in an actual code editor and submitting their solutions for hidden test-case validation.
+Each independently completed challenge reveals two temporary victim placeholders and one protected code fragment. All discoveries persist to the same team-scoped Evidence Board. The fragments can be combined into a final unlock code; validating it does not activate Round 4.
 
-The round contains three progressively harder challenges:
-- Challenge 1: Basic arithmetic logic.
-- Challenge 2: Multiple operations and expressions.
-- Challenge 3: Conditions and logical operations.
+Optional hints and configured deduction values are stored server-side. They do not change scores until the shared scoring system exists. Round access remains organizer-controlled, and earlier preliminary rounds do not block Round 3.
 
-Optional hints can provide additional clues or examples in exchange for point deductions.
-
-Each successfully completed challenge reveals one code fragment and two victims. Round 3 reveals six total. The three fragments combine into the final unlock code.
-
-**Output:** Three code fragments, six victim discoveries and the final unlock-code result.
-
-**Technical direction:** Python execution must use a restricted, secure environment. Hidden program logic and test cases must remain server-side.
-
+Exact competition questions, answer keys, hint content, marks, deduction values, and final code remain unfinalized. The current challenges are temporary demonstration content only.
 ### Round 4 – OPERATION: DEADLOCK
 
 **Story purpose:** Connect the entire investigation and identify the killer.
@@ -140,7 +130,7 @@ The exact evidence structure, final answer format and scoring rules must be docu
 
 - Victim identities and case details.
 - Evidence content and relationships.
-- Round 3 challenge programs, input-output examples, hint content, point deductions, scoring and final unlock code.
+- Final Round 3 competition questions, hint content, marks, deduction values and final unlock code.
 - Exact final investigation sequence.
 - Final killer-identification validation rules.
 

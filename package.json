@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test:crypto": "node --experimental-strip-types scripts/test-crypto-tools.mjs",
+    "test:round3:remote": "node supabase/tests/round3-crypto-protocol.remote.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

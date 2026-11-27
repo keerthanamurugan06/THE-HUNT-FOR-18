@@ -90,25 +90,20 @@ Solutions must be validated securely on the server. Never expose protected solut
 
 Exact challenge content, hidden words, scoring and evidence dependency remain subject to project-owner approval.
 
-### Round 3 — BLIND CODE: The Black Box
+### Round 3 — THE CRYPTO PROTOCOL
 
-A black-box reverse-engineering challenge using an actual Python code editor.
+Three cryptography challenges: repeating-key XOR, layered cryptography, and educational weak RSA. Teams use the bounded in-app workbench; do not add Python execution or arbitrary code execution.
 
-Confirmed direction:
-- Three progressively harder black-box challenges.
-- Teams receive input-output examples.
-- Teams experiment with additional inputs and observe outputs.
-- Teams infer the hidden program logic.
-- Teams write Python code in an actual code editor to reproduce the behaviour.
-- Solutions are validated against hidden test cases.
-- Optional hints provide additional clues or examples with point deductions.
-- Each completed challenge reveals one code fragment.
-- Each completed challenge independently reveals two victims; Round 3 can reveal six victims total.
-- All three fragments combine into a final unlock code.
-- Python execution must use a restricted, secure environment.
-- Hidden formulas and test cases must remain server-side.
+- Each completed challenge reveals two victims and one protected code fragment, after server-side validation.
+- Team workspaces and hint use are team-scoped and server-persisted.
+- Expected keys/plaintexts, hint content, fragments, and the final unlock code remain protected server-side.
+- Organizers configure answer formats, case sensitivity, whitespace normalization, required key/plaintext fields, hints, and deductions.
+- Hint usage and configured deductions are recorded server-side; do not award or deduct scores until the shared scoring system is implemented.
+- Publication is separate from round activation. Competition configuration freezes once the round starts.
+- Successful final-code submission never activates Round 4.
+- Current status: local MVP and hosted test harness are present; migration `20261127190000_round3_crypto_protocol.sql` remains unapplied after failed attempts. Obtain approval before retrying the corrected migration.
 
-Do not replace this with a blindfolded communication challenge or a visual code builder.
+Actual competition content and any scoring/deduction values remain unfinalized.
 
 ### Event progression and operations
 
@@ -155,6 +150,13 @@ For every feature:
 9. Update relevant documentation after verification.
 
 Do not begin the next major feature until the current feature has been verified or its incomplete status has been clearly recorded.
+
+### Current milestone order
+
+1. Complete Round 3 migration, hosted security/integration verification, and auth/Round 1/Round 2 regression checks. The migration retry requires explicit approval after the previous SQL failures.
+2. Implement the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboard release.
+3. Keep the existing Round 2 organizer interface and backend unchanged. The proposed Round 2 question wizard is deferred and must not be started unless the owner reopens it.
+4. Keep Round 4 deferred and locked by default.
 
 ## 6. Security Requirements
 
