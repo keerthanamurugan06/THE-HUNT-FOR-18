@@ -1,6 +1,6 @@
 # THE HUNT FOR 18 – Next Steps
 
-**Last Updated:** 23 November 2026
+**Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
 
 ## 1. Immediate Objective
@@ -12,7 +12,7 @@ Prioritize essential functionality, security, testing and deployment over option
 ## 2. Remaining Planning Tasks
 
 ### Gameplay decisions
-- Finalize Round 3 mechanics.
+- Finalize Round 3 challenge programs, input-output examples, supported Python syntax, execution limits, hint content, point deductions, scoring and final unlock code.
 - Confirm victim information distribution.
 - Finalize challenge content and evidence.
 - Define scoring and penalties.
@@ -36,22 +36,17 @@ Prioritize essential functionality, security, testing and deployment over option
 
 This is only the core foundation. The full database design and gameplay schema are still pending.
 
-## 3. Development Roadmap
+## 3. Immediate Development Priorities
 
-| Target date | Phase | Main deliverable |
-|---|---|---|
-| Nov 20 | Foundation | React, Vite, TypeScript and project setup |
-| Nov 21 | Backend | Supabase, database, authentication and security |
-| Nov 22 | Admin | Essential organizer dashboard |
-| Nov 23 | Participant | Team dashboard and protected access |
-| Nov 24 | Rounds 1 and 2 | Working core challenges |
-| Nov 25 | Rounds 3 and 4 | Approved Round 3 and playable final MVP |
-| Nov 26 | Integration | Scoring, timers, leaderboard and testing |
-| Nov 27 | Deployment | Production deployment and rehearsal |
-| Nov 28 | Event | Run THE HUNT FOR 18 |
+1. Reconcile project documentation with the current repository implementation.
+2. Create a separate Supabase cloud test project.
+3. Inspect and validate the pending Classic Sudoku progress migration in the test project.
+4. Complete and verify essential Round 1 backend integration.
+5. Implement only essential participant and organizer workflows.
+6. Test the complete event flow, including team access, timers, answer validation and error recovery.
+7. Deploy only after the tested build and production configuration are verified.
 
-This is an aggressive target, not a guarantee. Reduce scope when necessary to preserve reliability.
-
+Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow
 
 For every feature:
@@ -91,12 +86,12 @@ A feature is complete only when:
 
 ## 7. Next Development Session
 
-**Target date:** 23 November 2026 or next implementation session
+**Target date:** 27 November 2026 or next implementation session
 
 First tasks:
-1. Continue implementation of the existing React + Vite + TypeScript application foundation.
-2. Connect the frontend to the verified Supabase project.
-3. Implement trusted team and organizer provisioning.
-4. Implement authentication and protected route boundaries.
-5. Add remaining MVP database migrations only after unresolved gameplay decisions are finalized.
-6. Implement one core application feature at a time and verify it.
+1. Continue implementation of the existing React + Vite + TypeScript application.
+2. Create a separate Supabase cloud test project.
+3. Validate the pending Classic Sudoku progress migration in the test environment.
+4. Complete essential Round 1 backend integration.
+5. Implement essential participant and organizer workflows.
+6. Test the complete event flow and verify the production build before deployment.

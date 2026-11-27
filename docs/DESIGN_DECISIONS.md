@@ -55,4 +55,44 @@ This document records approved project decisions. Do not change an approved deci
 | D027 | The final round connects the investigation evidence and identifies the killer. | CONFIRMED |
 | D028 | The final round must not become a separate unrelated game. | CONFIRMED |
 
-## 6. Round
+## 6. Round Decisions
+### Round 1 - DIGITAL LOGIC TRAP
+
+| ID | Decision | Status |
+|---|---|---|
+| D029 | Round 1 contains six Sudoku variations: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Combined. | CONFIRMED |
+| D030 | All six Sudoku variations are available simultaneously in Open Challenge Mode. | CONFIRMED |
+| D031 | Teams may solve puzzles in any order and switch between puzzles while retaining individual progress. | CONFIRMED |
+| D032 | Puzzle display order is randomized independently for each team. | CONFIRMED |
+| D033 | Each completed Sudoku puzzle independently unlocks its associated evidence. | CONFIRMED |
+| D034 | Conflict highlighting identifies rule violations without revealing correct answers. | CONFIRMED |
+
+### Round 2 - PASSWORD BREAKER
+
+| ID | Decision | Status |
+|---|---|---|
+| D035 | Round 2 contains six separate password and code-breaking challenges. | CONFIRMED |
+| D036 | All six challenges are available immediately, and teams may solve them in any order. | CONFIRMED |
+| D037 | Challenge display order is randomized independently for each team. | CONFIRMED |
+| D038 | One challenge depends on evidence obtained from Round 1. | CONFIRMED |
+| D039 | Each correctly solved challenge reveals one hidden word; all six words form the final key phrase. | CONFIRMED |
+| D040 | Final phrase attempts are unlimited, with no penalty for incorrect attempts; a correct phrase unlocks the next stage. | CONFIRMED |
+
+### Round 3 - BLIND CODE
+
+| ID | Decision | Status |
+|---|---|---|
+| D041 | Round 3 uses black-box reverse engineering through input-output experimentation. | CONFIRMED |
+| D042 | Round 3 contains three progressively harder black-box challenges. | CONFIRMED |
+| D043 | Participants recreate hidden program behaviour using an actual Python code editor. | CONFIRMED |
+| D044 | Teams may request optional hints, which deduct points. | CONFIRMED |
+| D045 | Each completed challenge reveals one code fragment; all three fragments form the final unlock code. | CONFIRMED |
+| D046 | Solutions are checked against hidden test cases using restricted and secure server-side validation. | CONFIRMED |
+
+### Round 4 - OPERATION: DEADLOCK
+
+| ID | Decision | Status |
+|---|---|---|
+| D047 | Round 4 uses a 2D pixel-art investigation maze. | CONFIRMED |
+| D048 | The complete maze map is visible to participants, with progression through the investigation. | CONFIRMED |
+| D049 | Qualified teams use the same maze and challenge structure, while progress is tracked separately for each team. | CONFIRMED |

@@ -1,8 +1,8 @@
 # THE HUNT FOR 18 – Current Progress
 
-**Last Updated:** 23 November 2026
+**Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
-**Development Status:** Initial core database implementation completed; application and remaining database work pending
+**Development Status:** Core database foundation completed; homepage and Classic Sudoku frontend prototype exist; backend integration and remaining MVP features pending
 
 ## 1. Overall Status
 
@@ -15,7 +15,7 @@
 | Investigation storyline | Prepared |
 | Round 1 blueprint | Prepared |
 | Round 2 blueprint | Prepared |
-| Round 3 blueprint | Prepared; gameplay pending |
+| Round 3 blueprint | Prepared; gameplay design finalized; implementation pending |
 | Final round blueprint | Prepared; detailed mechanics pending |
 | Design decisions register | Prepared |
 | Technical architecture | Prepared |
@@ -25,11 +25,11 @@
 | Current progress tracker | Updated |
 | Next steps tracker | Updated |
 | AI handoff document | Updated |
-| Application foundation | React + Vite + TypeScript initialized; application features pending |
-| Gameplay database migrations | Not started |
-| Supabase integration | Production database provisioned; frontend integration pending |
+| Application foundation | React + Vite + TypeScript initialized; homepage and Classic Sudoku frontend prototype implemented |
+| Gameplay database migrations | Classic Sudoku progress migration drafted; test validation pending |
+| Supabase integration | Production core database verified; frontend integration pending; separate cloud test project required for pending migration validation |
 | Authentication | Not started |
-| Testing | Not started |
+| Testing | Core database checks performed; end-to-end application testing pending |
 | Deployment | Not started |
 
 ## 2. Completed Planning Work
@@ -48,7 +48,7 @@
 
 ## 3. Pending Planning Work
 
-- Finalize Round 3 gameplay.
+- Finalize Round 3 challenge programs, examples, hints, point deductions, scoring and final unlock code.
 - Finalize exact questions and evidence.
 - Finalize scoring and qualification rules.
 - Finalize final-round mechanics.

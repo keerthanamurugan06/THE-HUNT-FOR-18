@@ -4,15 +4,15 @@
 Participants solve 9×9 Sudoku variants to uncover investigation evidence.
 
 **Provisional duration:** 20 minutes  
-**Status:** Gameplay blueprint confirmed; detailed configuration pending.
+**Status:** Six-variation Open Challenge Mode confirmed; detailed puzzle configuration pending.
 
 ## Gameplay
-- Use Classic Sudoku, Jigsaw Sudoku, Windoku/Hyper Sudoku and Anti-Knight/Anti-King variants.
-- Combined variants may be considered after fairness and feasibility testing.
-- All teams receive the same puzzle collection.
-- Puzzle display order is randomized separately for each team.
-- Teams can navigate between available puzzles.
-- Every correctly solved puzzle unlocks its associated evidence.
+- Six Sudoku variations are included: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Combined.
+- All six variations are available simultaneously in Open Challenge Mode.
+- Teams may solve puzzles in any order and switch between puzzles freely.
+- Individual puzzle progress is retained when teams switch between puzzles.
+- Puzzle display order is randomized independently for each team.
+- Every correctly solved puzzle independently unlocks its associated evidence immediately.
 - Evidence is associated with the original puzzle ID, not its display position.
 
 ## Participant Interface
@@ -61,8 +61,7 @@ Expiry must preserve accepted submissions, scores and unlocked evidence.
 - Preserve progress across refreshes and reconnects.
 
 ## Pending Decisions
-- Exact puzzle count.
-- Difficulty distribution.
+- Difficulty distribution across the six variations.
 - Points per puzzle.
 - Attempt limits and penalties.
 - Evidence content and format.

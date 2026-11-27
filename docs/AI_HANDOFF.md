@@ -1,6 +1,6 @@
 # THE HUNT FOR 18 – AI Handoff Guide
 
-**Last Updated:** 23 November 2026
+**Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
 
 ## 1. Purpose
@@ -64,22 +64,22 @@ Do not introduce unnecessary technologies without explaining their benefits and 
 
 ## 5. Current Project Stage
 
-**Stage:** Initial core database foundation completed; application implementation pending.
+**Stage:** Core database foundation completed; homepage and Classic Sudoku frontend prototype exist; broader application and backend implementation remain pending.
 
 The repository, planning documents, and initial core database migration have been created.
 
 At the time of this handoff:
 
-- React + Vite + TypeScript foundation has been initialized; application features are not yet implemented.
+- React + Vite + TypeScript application exists, including a public homepage and a Classic Sudoku frontend prototype.
 - The production Supabase project `the-hunt-for-18` has the initial core migration applied.
 - Local and remote migration histories match.
 - The public schema contains `events`, `rounds`, `round_config`, `teams`, `team_members`, and `organizer_roles`.
 - The migration is committed and pushed to GitHub.
 - The Git working tree was clean before the status-documentation update.
-- Gameplay and remaining database migrations have not been created.
+- The Classic Sudoku progress migration has been drafted but is not yet validated; other gameplay migrations remain pending.
 - Authentication has not been implemented.
-- Frontend dashboards have not been implemented.
-- Testing and deployment have not started.
+- Participant and organizer dashboards remain incomplete.
+- End-to-end application testing and production deployment remain pending.
 
 Do not interpret the initial core migration as completion of the full database schema.
 
@@ -97,6 +97,9 @@ Check `CURRENT_PROGRESS.md` before assuming anything has changed.
 - Server-side answer validation and scoring.
 - Protected answer keys and evidence.
 - Participant access restricted to their own team.
+- Round 1 contains six simultaneous Sudoku variations in Open Challenge Mode.
+- Round 2 contains six independent password/code challenges.
+- Round 3 uses three progressive black-box reverse-engineering challenges with an actual Python code editor, hidden test validation and code fragments.
 - Final round uses a 2D pixel-art maze.
 - Full maze map is visible but difficult to solve.
 - Wrong routes may contain mini-challenges before returning.
@@ -106,7 +109,7 @@ Consult `DESIGN_DECISIONS.md` for the complete decision register. Pending decisi
 
 ## 7. Important Unresolved Decisions
 
-- Final Round 3 gameplay.
+- Round 3 challenge programs, input-output examples, Python execution limits, hint content, point deductions, scoring and final unlock code.
 - Exact challenge content and answers.
 - Evidence distribution and extraction rules.
 - Scoring and penalties.
@@ -165,10 +168,10 @@ Continue according to `NEXT_STEPS.md`.
 The next implementation session should:
 1. Inspect the existing repository and planning documents.
 2. Continue implementation of the existing React + Vite + TypeScript foundation.
-3. Connect the frontend to the verified Supabase production project.
+3. Create a separate Supabase cloud test project and validate pending database migrations there.
 4. Implement trusted team and organizer provisioning.
 5. Implement authentication and protected route boundaries.
-6. Add remaining database migrations only after approved gameplay decisions are clear.
+6. Add and validate remaining database migrations in the test environment after reviewing approved gameplay decisions.
 
 The event is scheduled for 28 November 2026. Prioritize a working, tested MVP over optional features.
 

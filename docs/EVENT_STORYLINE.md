@@ -50,17 +50,26 @@ Correct submission of the phrase unlocks the next investigation stage.
 
 **Output:** Six hidden words and the successfully unlocked investigation stage.
 
-### Round 3 – BLIND CODE
+### Round 3 – BLIND CODE: The Black Box
 
-**Story purpose:** Continue uncovering victim-related information through a two-person challenge.
+**Story purpose:** Recover and reverse-engineer a mysterious black-box program discovered during the investigation.
 
-The round must connect to the investigation and contribute to discovering information about the victims.
+Teams receive input-output examples and experiment with additional inputs to uncover the hidden program logic.
 
-Its final gameplay mechanics are still under discussion.
+They must reproduce the observed behaviour by writing Python code in an actual code editor and submitting their solutions for hidden test-case validation.
 
-**Output:** Additional victim-related investigation information.
+The round contains three progressively harder challenges:
+- Challenge 1: Basic arithmetic logic.
+- Challenge 2: Multiple operations and expressions.
+- Challenge 3: Conditions and logical operations.
 
-**Important:** Do not implement an unapproved Round 3 concept.
+Optional hints can provide additional clues or examples in exchange for point deductions.
+
+Each successfully completed challenge reveals one code fragment. The three fragments combine into the final unlock code.
+
+**Output:** Three code fragments and the successfully decoded final unlock code.
+
+**Technical direction:** Python execution must use a restricted, secure environment. Hidden program logic and test cases must remain server-side.
 
 ### Round 4 – OPERATION: DEADLOCK
 
@@ -129,7 +138,7 @@ The exact evidence structure, final answer format and scoring rules must be docu
 - Exact allocation of the 18 victims across Rounds 1–3.
 - Victim identities and case details.
 - Evidence content and relationships.
-- Round 3 final mechanics.
+- Round 3 challenge programs, input-output examples, hint content, point deductions, scoring and final unlock code.
 - Exact final investigation sequence.
 - Final killer-identification validation rules.
 

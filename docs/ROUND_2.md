@@ -44,8 +44,8 @@ These are suggestions, not finalized content:
 - Manage timer and round activation.
 
 ## Confirmed Rules
-- Final phrase attempts are unlimited.
-- No penalty for incorrect final phrase attempts.
+- Final phrase attempts are unlimited, independently of individual challenge attempt limits.
+- No penalty is applied for incorrect final phrase attempts.
 - Correct final phrase unlocks the next investigation stage.
 
 ## Security
