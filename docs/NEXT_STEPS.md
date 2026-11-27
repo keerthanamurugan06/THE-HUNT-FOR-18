@@ -42,10 +42,11 @@ This is only the core foundation. The full database design and gameplay schema a
 
 ## 3. Immediate Development Priorities
 
-1. Complete broader participant and organizer workflow testing on the test project.
-2. Implement server-authoritative timers and evidence delivery only when their required behavior and data are approved/available.
-3. Implement other Sudoku variants only after their detailed rules and puzzle content are approved.
-4. Do not deploy to production without separate explicit approval.
+1. Review the completed Round 1 coordinator demonstration; do not begin Round 2 before explicit approval.
+2. Repeat browser visual verification and capture screenshots when the computer-use runtime is available.
+3. Implement an approved server-authoritative Round 1 timer before event use; the current timer is not authoritative.
+4. Replace temporary victim placeholders only after final victim information is approved; do not invent story content or scoring.
+5. Keep all further hosted verification on test project `bfzlszktufjqlfiyknga`; never access production.
 
 Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow

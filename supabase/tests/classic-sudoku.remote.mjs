@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 
@@ -24,6 +25,7 @@ const clientsToSignOut = []
 const provisionedTeamCodes = []
 let testEventId = null
 let currentCheck = 'setup'
+let currentDetail = 'setup'
 
 function report(name) {
   process.stdout.write(`PASS: ${name}\n`)
@@ -261,8 +263,117 @@ try {
   const unauthenticatedCompletion = await publicClient.rpc('complete_classic_sudoku')
   assert.ok(unauthenticatedCompletion.error)
   report('unauthenticated callers cannot complete a Sudoku puzzle')
-} catch {
-  process.stderr.write(`FAIL: ${currentCheck}\n`)
+
+  currentCheck = 'six-variant Open Challenge load and team order'
+  currentDetail = 'load Round 1 RPC for first test team'
+  const openOne = await participantOne.client.rpc('load_round1_sudokus')
+  currentDetail = 'load Round 1 RPC for second test team'
+  const openTwo = await participantTwo.client.rpc('load_round1_sudokus')
+  currentDetail = 'validate first test team RPC result'
+  if (openOne.error) {
+    const column = String(openOne.error.message ?? '').match(/column reference\s+"?([a-z_]+)"?\s+is ambiguous/i)?.[1]
+    throw Object.assign(new Error('Round 1 load RPC failed.'), { code: openOne.error.code ?? 'UNKNOWN_DB_ERROR', ambiguousColumn: column })
+  }
+  assert.ifError(openOne.error)
+  currentDetail = 'validate second test team RPC result'
+  if (openTwo.error) {
+    const column = String(openTwo.error.message ?? '').match(/column reference\s+"?([a-z_]+)"?\s+is ambiguous/i)?.[1]
+    throw Object.assign(new Error('Round 1 load RPC failed.'), { code: openTwo.error.code ?? 'UNKNOWN_DB_ERROR', ambiguousColumn: column })
+  }
+  assert.ifError(openTwo.error)
+  currentDetail = 'validate puzzle count and order for first team'
+  assert.equal(openOne.data.length, 6)
+  currentDetail = 'validate puzzle count for second team'
+  assert.equal(openTwo.data.length, 6)
+  currentDetail = 'validate six variant type set'
+  const expectedTypes = ['classic', 'jigsaw', 'windoku', 'anti_knight', 'anti_king', 'diagonal'].sort()
+  assert.deepEqual(openOne.data.map((row) => row.puzzle_type).sort(), expectedTypes)
+  assert.deepEqual(openTwo.data.map((row) => row.puzzle_type).sort(), expectedTypes)
+  currentDetail = 'validate randomized display order'
+  assert.deepEqual(openOne.data.map((row) => row.display_order).sort(), [1, 2, 3, 4, 5, 6])
+  assert.deepEqual(openTwo.data.map((row) => row.display_order).sort(), [1, 2, 3, 4, 5, 6])
+  currentDetail = 'validate demo-only metadata'
+  assert.ok(openOne.data.every((row) => row.demo_only === true))
+  report('all six demo variants initialize with stable per-team display order')
+
+  currentCheck = 'demo definitions and per-variant secure completion'
+  const migrationText = readFileSync(new URL('../migrations/20261127160000_round1_open_challenge.sql', import.meta.url), 'utf8')
+  const seedStart = migrationText.indexOf('-- Verified temporary demonstration puzzle candidates.')
+  assert.notEqual(seedStart, -1)
+  const seedPattern = /\('([^']+)', '([0-9]{81})', '([1-9]{81})', '([^']+)', true, (array\[[0-8,]+\]::integer\[\]|null)\)/g
+  const seeds = [...migrationText.slice(seedStart).matchAll(seedPattern)]
+  const solutions = new Map(seeds.map((seed) => [seed[1], seed[3]]))
+  assert.equal(solutions.size, 6)
+  const victimByType = { classic: 1, jigsaw: 2, windoku: 3, anti_knight: 4, anti_king: 5, diagonal: 6 }
+  for (const puzzleType of expectedTypes) {
+    if (puzzleType === 'classic') {
+      assert.equal(openOne.data.find((row) => row.puzzle_type === puzzleType).progress_status, 'completed')
+      const retry = await participantOne.client.rpc('complete_round1_sudoku', { p_puzzle_type: puzzleType })
+      assert.ifError(retry.error)
+      assert.equal(retry.data, 1)
+      continue
+    }
+    const row = openOne.data.find((puzzle) => puzzle.puzzle_type === puzzleType)
+    const solution = solutions.get(puzzleType)
+    assert.ok(row && solution)
+    const incomplete = row.initial_grid.split('')
+    const empty = incomplete.findIndex((cell) => cell === '0')
+    assert.notEqual(empty, -1)
+    incomplete[empty] = solution[empty] === '9' ? '8' : '9'
+    const badSave = await participantOne.client.from('team_sudoku_progress').update({ board: incomplete.join('') })
+      .eq('puzzle_type', puzzleType).eq('status', 'in_progress').select('id').maybeSingle()
+    assert.ifError(badSave.error)
+    assert.ok(badSave.data?.id)
+    const invalidCompletion = await participantOne.client.rpc('complete_round1_sudoku', { p_puzzle_type: puzzleType })
+    assert.ifError(invalidCompletion.error)
+    assert.equal(invalidCompletion.data, null)
+
+    const restored = await participantOne.client.rpc('load_round1_sudokus')
+    assert.ifError(restored.error)
+    assert.equal(restored.data.find((puzzle) => puzzle.puzzle_type === puzzleType).board, incomplete.join(''))
+    const correctSave = await participantOne.client.from('team_sudoku_progress').update({ board: solution })
+      .eq('puzzle_type', puzzleType).eq('status', 'in_progress').select('id').maybeSingle()
+    assert.ifError(correctSave.error)
+    assert.ok(correctSave.data?.id)
+    const completion = await participantOne.client.rpc('complete_round1_sudoku', { p_puzzle_type: puzzleType })
+    assert.ifError(completion.error)
+    assert.equal(completion.data, victimByType[puzzleType])
+    const repeated = await participantOne.client.rpc('complete_round1_sudoku', { p_puzzle_type: puzzleType })
+    assert.ifError(repeated.error)
+    assert.equal(repeated.data, victimByType[puzzleType])
+  }
+  report('incorrect grids are rejected; correct saved solutions complete each variant and retries return the same victim')
+
+  currentCheck = 'persistent victim discovery and RLS isolation'
+  const teamOneUnlocks = await participantOne.client.from('team_round1_evidence_unlocks')
+    .select('team_id,puzzle_type,victim_number').order('victim_number')
+  const teamTwoUnlocks = await participantTwo.client.from('team_round1_evidence_unlocks')
+    .select('team_id,puzzle_type,victim_number')
+  assert.ifError(teamOneUnlocks.error)
+  assert.ifError(teamTwoUnlocks.error)
+  assert.deepEqual(teamOneUnlocks.data.map((row) => row.victim_number), [1, 2, 3, 4, 5, 6])
+  assert.ok(teamOneUnlocks.data.every((row) => row.team_id === teamOne.id))
+  assert.equal(teamTwoUnlocks.data.length, 0)
+  const teamTwoRound = await participantTwo.client.rpc('load_round1_sudokus')
+  assert.ifError(teamTwoRound.error)
+  assert.ok(teamTwoRound.data.every((row) => row.progress_status === 'in_progress' && !row.evidence_unlocked))
+  const duplicateUnlocks = await participantOne.client.from('team_round1_evidence_unlocks')
+    .select('puzzle_type,victim_number')
+  assert.ifError(duplicateUnlocks.error)
+  assert.equal(duplicateUnlocks.data.length, 6)
+  report('six discoveries persist, remain unique and are hidden from the second team')
+
+  currentCheck = 'unauthenticated Open Challenge rejection'
+  const unauthenticatedRound = await publicClient.rpc('load_round1_sudokus')
+  assert.ok(unauthenticatedRound.error)
+  const unauthenticatedVariantCompletion = await publicClient.rpc('complete_round1_sudoku', { p_puzzle_type: 'diagonal' })
+  assert.ok(unauthenticatedVariantCompletion.error)
+  report('unauthenticated clients cannot load or complete Round 1 puzzles')
+} catch (error) {
+  const safeCode = typeof error?.code === 'string' ? error.code : 'ASSERTION_OR_RUNTIME_ERROR'
+  const safeHttpStatus = Number.isInteger(error?.status) ? error.status : undefined
+  const ambiguousColumn = typeof error?.ambiguousColumn === 'string' ? error.ambiguousColumn : undefined
+  process.stderr.write(`FAIL: ${currentCheck} at ${currentDetail} (code ${safeCode}${safeHttpStatus ? `, HTTP ${safeHttpStatus}` : ''}${ambiguousColumn ? `, ambiguous column ${ambiguousColumn}` : ''})\n`)
   process.exitCode = 1
 } finally {
   for (const client of clientsToSignOut) {
@@ -283,7 +394,7 @@ try {
       if (verifyError || data.some((team) => team.status !== 'suspended')) {
         throw verifyError ?? new Error('Suspended fixture status could not be verified.')
       }
-    } catch { process.exitCode = 1 }
+    } catch { process.stderr.write('CLEANUP: Temporary team suspension could not be verified.\n'); process.exitCode = 1 }
   }
 
   if (testEventId) {
@@ -301,7 +412,7 @@ try {
       if (verifyError || data.status !== 'cancelled') {
         throw verifyError ?? new Error('Test event cancellation could not be verified.')
       }
-    } catch { process.exitCode = 1 }
+    } catch { process.stderr.write('CLEANUP: Temporary event cancellation could not be verified.\n'); process.exitCode = 1 }
   }
 
   if (process.exitCode) {

@@ -247,6 +247,10 @@ body { background: var(--hunt-black); color: var(--hunt-white); }
   transform: rotate(-0.35deg);
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
+
+.victim-card-sealed .victim-photograph { filter: grayscale(1) brightness(.42); }
+.victim-card-sealed .victim-record { color: #777d88; }
+.victim-card-sealed .evidence-pin { opacity: .35; }
 .victim-card:nth-child(3n) { transform: rotate(0.7deg); }
 .victim-card:nth-child(4n) { transform: rotate(-1deg); }
 .victim-card:hover { transform: translateY(-5px) rotate(0deg); box-shadow: 0 16px 28px rgba(0, 0, 0, 0.48); }

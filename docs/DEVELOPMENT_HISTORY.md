@@ -157,6 +157,48 @@ Record actual credit usage after each development session when available.
 
 **Remaining Work:** Server-authoritative timer and evidence integration; remaining Sudoku variants require their approved rules and puzzle content. No other rounds were implemented.
 
+### Round 1 Milestone 3 — partial local implementation
+
+**Date:** 27 November 2026
+
+**Feature / Task:** Shared Sudoku variant logic and open-challenge frontend.
+
+**Files Created:** `src/lib/sudoku-rules.ts`, `scripts/test-sudoku-rules.mjs`, `scripts/generate-round1-demo.mjs` (local generator), `supabase/migrations/20261127160000_round1_open_challenge.sql` (finalized locally; dry-run only).
+
+**Files Modified:** `src/pages/Round1Page.tsx`, `src/pages/Round1Page.css`, `src/pages/TeamHomePage.tsx`, `src/components/EvidenceBoard.tsx`, `src/App.css`, `supabase/tests/classic-sudoku.remote.mjs`, `AGENTS.md`, and Round 1/handoff/progress/roadmap documentation.
+
+**Implementation Summary:** Added rules/conflict/uniqueness helpers and a six-entry, per-puzzle progress interface. Switching flushes the current board before changing puzzles. Owner replaced Combined with Diagonal Sudoku (Classic + both main diagonals). Each server-validated completion now returns one fixed demo victim placeholder and inserts an idempotent team-scoped unlock record. The participant Evidence Board restores and seals discoveries per team.
+
+**Tests Performed:** six-seed local exact-one-solution/rule checks; `node --check supabase/tests/classic-sudoku.remote.mjs`; `npm.cmd run lint`; `npm.cmd run build`; `git diff --check`; `npm.cmd exec --yes --package=supabase -- supabase db push --dry-run --linked`.
+
+**Test Results:** All six migration seed definitions passed unique-solution checks; Diagonal and variant conflict checks passed; lint/build/syntax/diff checks passed. Supabase dry run listed only migration `20261127160000_round1_open_challenge.sql` against test project `bfzlszktufjqlfiyknga`, with no changes applied. Build retains the >500 kB chunk warning. Remote integration and browser tests await migration approval/application.
+
+**Bugs Identified / Corrections:** Fixed a tab-switch debounce race by flushing the current puzzle before changing tabs. Replaced the misleading static 20:00 display with “NOT ACTIVE.”
+
+**Database Changes:** No remote changes. Drafted an additive migration with multi-variant schema, per-team order, secure generic load/completion RPCs and per-puzzle evidence-unlock records. It is not applied.
+
+**Remaining Work:** Obtain approval to apply the reviewed migration to the test project; run automated remote/browser tests; verify all six puzzles and victim discovery through the hosted flow; server timer and final narrative evidence remain pending.
+
+**Git Commit:** None; no commit or push performed.
+
+### Round 1 Milestone 3 — hosted verification update
+
+**Date:** 27 November 2026
+
+**Database Changes:** Applied the owner-approved `20261127160000_round1_open_challenge.sql` and `20261127170000_round1_load_conflict_targets.sql` migrations only to test project `bfzlszktufjqlfiyknga`. The CLI verified the linked project ref immediately before each remote operation, and remote migration history confirms both migrations alongside the prior test migrations. Production was not accessed.
+
+**Tests Performed:** Hosted team-authentication regression and full hosted Round 1 integration; `npm.cmd run lint`; `npm.cmd run build`; `node --experimental-strip-types scripts/test-sudoku-rules.mjs`; syntax checks for both remote test scripts; `git diff --check`.
+
+**Test Results:** All listed checks passed. Hosted Round 1 verified Classic regression; all six variants loaded with a per-team 1–6 puzzle order; saved boards restored after client recreation; clues resisted edits; incomplete and incorrect boards were rejected; server validation completed each of five variants that were not already completed in the Classic regression; retries returned the same victim; six distinct unlocks persisted and were isolated from the second team; unauthenticated Round 1 RPCs were rejected. Authentication regression verified disabled public signup, organizer-only provisioning, generic invalid-credential rejection, valid sessions and restoration, participant route protection, RLS isolation, throttling and logout. Build reports a 523.8 kB minified JS chunk warning.
+
+**Fixture Handling:** Both suites revoked temporary sessions, suspended their own temporary teams and cancelled test events. Existing data was not deleted; append-only audit-linked records remain.
+
+**Browser Verification:** Attempted, but the computer-use runtime failed to initialize because the required kernel asset path was unavailable. No screenshots were captured; browser visual verification remains pending.
+
+**Remaining Work:** Coordinator review of Round 1, browser verification when available, and the server-authoritative timer. Do not begin Round 2 without owner approval.
+
+**Git Commit:** None; no commit or push performed.
+
 ### Development History Entry Template
 
 For every future milestone, record:

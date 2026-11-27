@@ -60,12 +60,15 @@ This document records approved project decisions. Do not change an approved deci
 
 | ID | Decision | Status |
 |---|---|---|
-| D029 | Round 1 contains six Sudoku variations: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Combined. | CONFIRMED |
+| D029 | Round 1 contains six Sudoku variations: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Diagonal Sudoku (X-Sudoku). | CONFIRMED |
 | D030 | All six Sudoku variations are available simultaneously in Open Challenge Mode. | CONFIRMED |
 | D031 | Teams may solve puzzles in any order and switch between puzzles while retaining individual progress. | CONFIRMED |
 | D032 | Puzzle display order is randomized independently for each team. | CONFIRMED |
 | D033 | Each completed Sudoku puzzle independently unlocks its associated evidence. | CONFIRMED |
 | D034 | Conflict highlighting identifies rule violations without revealing correct answers. | CONFIRMED |
+| D050 | Diagonal Sudoku (X-Sudoku) replaces Combined Sudoku for the demonstration and final event; it uses Classic rules plus both long diagonal constraints. | CONFIRMED (27 Nov 2026) |
+| D051 | Six temporary demo-only Round 1 puzzles are approved, each requiring a unique solution; no unapproved story evidence, scoring or penalties. | CONFIRMED (27 Nov 2026) |
+| D052 | Each Round 1 puzzle independently reveals one of six victim files; demo reveals use placeholders, are team-scoped, persistent and idempotent. | CONFIRMED (27 Nov 2026) |
 
 ### Round 2 - PASSWORD BREAKER
 

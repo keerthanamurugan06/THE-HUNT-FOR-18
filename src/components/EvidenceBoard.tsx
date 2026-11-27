@@ -1,4 +1,8 @@
-import { Fingerprint } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Fingerprint, LoaderCircle } from 'lucide-react'
+import { supabase } from '../lib/supabase'
+
+type Unlock = { victim_number: number; puzzle_type: string }
 
 const victims = Array.from({ length: 18 }, (_, index) => index + 1)
 
@@ -32,14 +36,42 @@ const mobileThreads = victims.slice(0, -1).map((victim) => {
   return `${x1},${y1} ${x2},${y2}`
 })
 
-export function EvidenceBoard() {
+export function EvidenceBoard({ participantView = false }: { participantView?: boolean }) {
+  const [unlocks, setUnlocks] = useState<Unlock[]>([])
+  const [loadState, setLoadState] = useState<'idle' | 'loading' | 'ready' | 'error'>(participantView ? 'loading' : 'idle')
+
+  useEffect(() => {
+    if (!participantView) return
+    let active = true
+    async function loadUnlocks() {
+      setLoadState('loading')
+      const { data, error } = await supabase
+        .from('team_round1_evidence_unlocks')
+        .select('victim_number,puzzle_type')
+        .order('victim_number')
+      if (!active) return
+      if (error || !Array.isArray(data)) { setLoadState('error'); return }
+      setUnlocks(data.filter((row): row is Unlock => Number.isInteger(row.victim_number)
+        && row.victim_number >= 1 && row.victim_number <= 6
+        && typeof row.puzzle_type === 'string'))
+      setLoadState('ready')
+    }
+    void loadUnlocks()
+    return () => { active = false }
+  }, [participantView])
+  const unlockedVictims = new Set(unlocks.map(unlock => unlock.victim_number))
+
   return (
     <section id="evidence" className="investigation-section evidence-section" aria-labelledby="evidence-title">
       <div className="section-heading">
         <p className="eyebrow">CONFIDENTIAL INVESTIGATION RECORD</p>
         <h2 id="evidence-title">THE 18 VICTIMS</h2>
-        <p>Every victim has a story. Every connection matters.</p>
+        <p>{participantView ? 'Verified discoveries are retained for this team across sessions.' : 'Every victim has a story. Every connection matters.'}</p>
       </div>
+
+      {participantView && loadState === 'loading' && <p className="round1-save-status" role="status"><LoaderCircle className="round1-spinner" size={15} /> RESTORING TEAM DISCOVERIES</p>}
+      {participantView && loadState === 'error' && <p className="round1-feedback" role="alert">Team discoveries could not be restored. Retry after the secure evidence service is available.</p>}
+      {participantView && loadState === 'ready' && <p className="round1-save-status" role="status">{unlockedVictims.size} / 6 DEMONSTRATION VICTIM FILES UNLOCKED</p>}
 
       <div className="evidence-board" aria-label="Investigation evidence board with 18 unidentified victim positions">
         <div className="board-grid-markings" aria-hidden="true" />
@@ -58,17 +90,17 @@ export function EvidenceBoard() {
 
         <div className="victim-grid">
           {victims.map((victim) => (
-            <article className="victim-card" key={victim}>
+            <article className={`victim-card ${participantView && !unlockedVictims.has(victim) ? 'victim-card-sealed' : ''}`} key={victim}>
               <div className="evidence-pin" aria-hidden="true" />
               <div className="case-marker">CASE {String(victim).padStart(2, '0')}</div>
-              <div className="victim-photograph" aria-label={`Victim ${String(victim).padStart(2, '0')} unidentified`}>
+              <div className="victim-photograph" aria-label={participantView && !unlockedVictims.has(victim) ? `Victim ${String(victim).padStart(2, '0')} file sealed` : `Victim ${String(victim).padStart(2, '0')} temporary demonstration placeholder`}>
                 <div className="silhouette-head" />
                 <div className="silhouette-body" />
-                <span>UNIDENTIFIED</span>
+                <span>{participantView && !unlockedVictims.has(victim) ? 'FILE SEALED' : participantView ? 'DEMO PLACEHOLDER' : 'UNIDENTIFIED'}</span>
               </div>
               <div className="victim-record">
                 <Fingerprint size={16} aria-hidden="true" />
-                <span>VICTIM {String(victim).padStart(2, '0')}</span>
+                <span>{participantView && !unlockedVictims.has(victim) ? 'IDENTITY SEALED' : `VICTIM ${String(victim).padStart(2, '0')}`}</span>
               </div>
             </article>
           ))}

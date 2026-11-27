@@ -97,26 +97,27 @@ Variations:
 3. Windoku
 4. Anti-Knight
 5. Anti-King
-6. Combined
+6. Diagonal Sudoku (X-Sudoku)
 
 Tasks:
-- [ ] Implement Jigsaw Sudoku.
-- [ ] Implement Windoku Sudoku.
-- [ ] Implement Anti-Knight Sudoku.
-- [ ] Implement Anti-King Sudoku.
-- [ ] Implement Combined Sudoku.
-- [ ] Verify each puzzle has exactly one valid solution.
-- [ ] Implement puzzle switching.
-- [ ] Preserve progress independently for each puzzle.
-- [ ] Randomize puzzle display order per team.
-- [ ] Unlock associated evidence immediately after completion.
+- [x] Implement Jigsaw Sudoku.
+- [x] Implement Windoku Sudoku.
+- [x] Implement Anti-Knight Sudoku.
+- [x] Implement Anti-King Sudoku.
+- [x] Implement Diagonal Sudoku (X-Sudoku) using Classic rules and both main diagonals.
+- [x] Verify each demo puzzle has exactly one valid solution.
+- [x] Implement puzzle switching and independent autosave/restoration.
+- [x] Randomize and persist each team's puzzle display order.
+- [x] Unlock the corresponding temporary victim placeholder after server-side completion validation.
 
 Completion criteria:
-- All six puzzles work correctly.
-- Validation respects each puzzle's rules.
-- Team progress is independent.
-- Switching puzzles does not lose progress.
-- Evidence unlocks only after verified completion.
+- [x] Hosted integration verifies all six puzzle types and server-side completion.
+- [x] Validation respects each puzzle's rules and rejects incorrect completion.
+- [x] Team progress is independent and survives client recreation/session restoration.
+- [x] Switching puzzles does not lose saved progress.
+- [x] Team-scoped evidence unlocks only after verified completion and cannot duplicate.
+- [ ] Browser visual verification/screenshots (computer-use runtime unavailable in latest run).
+- [ ] Server-authoritative timer.
 
 ---
 
@@ -125,11 +126,11 @@ Completion criteria:
 **Objective:** Provide secure access for teams and organizers.
 
 Tasks:
-- [ ] Implement team login.
-- [ ] Connect team identities to Supabase Auth.
-- [ ] Enforce team-specific data access.
-- [ ] Implement organizer authentication.
-- [ ] Implement organizer authorization.
+- [x] Implement team login.
+- [x] Connect team identities to Supabase Auth.
+- [x] Enforce team-specific data access.
+- [x] Implement organizer authentication.
+- [x] Implement organizer authorization.
 - [ ] Build essential organizer controls.
 - [ ] Configure event and round activation.
 - [ ] Configure team access and progress monitoring.

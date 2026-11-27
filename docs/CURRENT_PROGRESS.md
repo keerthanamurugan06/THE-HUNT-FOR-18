@@ -2,7 +2,7 @@
 
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
-**Development Status:** Team authentication and Classic Sudoku save/restore/completion are implemented and remotely verified on the test project; the other Round 1 variants and event features remain pending
+**Development Status:** Team authentication and Round 1 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Both approved Round 1 migrations are applied and verified. Browser automation could not initialize in this environment; the server-authoritative timer remains pending.
 
 ## 1. Overall Status
 
@@ -26,11 +26,12 @@
 | Next steps tracker | Updated |
 | AI handoff document | Updated |
 | Application foundation | React + Vite + TypeScript initialized; homepage and Classic Sudoku frontend prototype implemented |
-| Gameplay database migrations | Classic Sudoku progress migration applied and integrated on test project; remaining variants pending |
-| Supabase integration | Four migrations verified on test project; authentication and Classic Sudoku paths tested there; production unchanged in these milestones |
+| Gameplay database migrations | Classic Sudoku and six-variant Open Challenge migrations applied and integrated on test project |
+| Supabase integration | Six migrations verified on test project; authentication and Round 1 hosted paths tested there; production unchanged in these milestones |
 | Authentication | Team ID + access code, Supabase sessions, organizer provisioning and protected routes implemented; public signup disabled on test project |
-| Testing | Build, lint, remote authentication suite and remote Classic Sudoku suite pass; broader event testing remains pending |
+| Testing | Build, lint, Sudoku rule checks, remote authentication regression and full hosted Round 1 integration pass |
 | Deployment | Authentication functions deployed to test project; production deployment not started |
+| Round 1 variants | Six-puzzle UI/rules, demo seeds, server validation and team-scoped victim unlock persistence are implemented and hosted-tested; browser visual verification and server timer remain pending |
 
 ## 2. Completed Planning Work
 
@@ -93,11 +94,31 @@
 - Test fixtures were retained (no data deleted): the fixture event was cancelled, teams were suspended, temporary sessions revoked, and the synthetic organizer account was banned. Its organizer-role row, audit-linked rows and team progress rows remain in the test project.
 - Production was not accessed. Changes remain uncommitted and unpushed.
 
+### Round 1 Milestone 3 — partial local implementation (27 November 2026)
+
+- Added `src/lib/sudoku-rules.ts` for variant rules, conflict detection, connected Jigsaw-region validation, solution counting and puzzle-definition validation.
+- Reworked the Round 1 page into a six-puzzle navigation interface with separate board state, save-before-switch behavior, completed-puzzle locking, variant instructions and clearly marked demo-only UI.
+- Diagonal Sudoku (X-Sudoku) replaces Combined and uses Classic rules plus both main diagonal constraints.
+- Added local rule checks at `scripts/test-sudoku-rules.mjs`; Classic uniqueness and representative conflict cases pass.
+- `npm.cmd run lint`, `npm.cmd run build` and the focused rules script pass. Build retains the existing >500 kB chunk warning.
+- Applied and verified `20261127160000_round1_open_challenge.sql` and corrective `20261127170000_round1_load_conflict_targets.sql` on test project `bfzlszktufjqlfiyknga`; remote migration history lists both.
+- The automated authentication regression suite passed using the existing secure test setup; no environment-file contents or credentials were exposed.
+- The local generator produces six candidate grids with exactly one solution, including Diagonal; seed statements use `ON CONFLICT DO NOTHING` so the existing Classic definition and all team progress are retained.
+- Added a team-scoped evidence board view and cinematic reveal placeholder. Server mapping assigns one unique temporary victim number per puzzle; RLS and uniqueness constraints prevent cross-team reads and duplicate discovery rows.
+- Automated authentication regression passed, including signup restrictions, organizer provisioning, login rejection parity, session restoration, protected route, RLS isolation, throttling and logout.
+- Full hosted Round 1 integration passed: six puzzle definitions and each team's 1–6 display permutation, board persistence after client recreation, protected clues, incomplete/wrong-board rejection, correct server-side completion for the five variants not already completed in the Classic regression, retry idempotence, six unique victim unlocks, team isolation, and unauthenticated RPC rejection.
+- Authentication regression passed: signup disabled, unauthorized provisioning rejected, organizer provisioning, indistinguishable invalid Team ID/access-code rejection, valid login, session restoration, protected route, RLS isolation, throttling and logout.
+- `npm.cmd run lint`, `npm.cmd run build`, and `node --experimental-strip-types scripts/test-sudoku-rules.mjs` passed. Build reports a 523.8 kB minified JS chunk warning.
+- Test suites suspended their temporary teams, revoked sessions and cancelled test events. Rows linked to append-only audit records remain; no existing project data was deleted.
+- Browser verification/screenshots were attempted but unavailable because the computer-use runtime failed to initialize (`failed to write kernel assets`). Hosted UI-level verification remains pending. The server-authoritative timer and final narrative remain pending.
+
 This milestone implements only the initial core schema. It does not complete the full database design.
 
 ### Pending
 The following application and database work remains pending:
-- Integrate the remaining five Sudoku variants only after their detailed puzzle rules and data are approved.
+- Complete browser visual verification when the computer-use runtime is available; capture Round 1 screenshots.
+- Add an approved server-authoritative Round 1 timer before event use.
+- Replace numbered demo victim placeholders only after final victim content is approved.
 - Replace the static timer display with the approved server-authoritative timer workflow.
 - Connect verified Classic Sudoku completion to evidence delivery when the evidence workflow is approved and available.
 - React application features and dashboard implementation.

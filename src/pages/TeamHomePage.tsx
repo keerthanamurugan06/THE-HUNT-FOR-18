@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowRight, LogOut, ShieldCheck } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTeamAuth } from '../context/team-auth-context'
+import { EvidenceBoard } from '../components/EvidenceBoard'
 
 export default function TeamHomePage() {
   const { team, signOut } = useTeamAuth()
@@ -42,6 +43,7 @@ export default function TeamHomePage() {
           OPEN ROUND 01 <ArrowRight size={18} />
         </Link>
       </section>
+      <EvidenceBoard participantView />
     </main>
   )
 }

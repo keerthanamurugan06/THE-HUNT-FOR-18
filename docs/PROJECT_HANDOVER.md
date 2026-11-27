@@ -119,7 +119,7 @@ Six Sudoku variations:
 3. Windoku
 4. Anti-Knight
 5. Anti-King
-6. Combined
+6. Diagonal Sudoku (X-Sudoku)
 
 Rules:
 - All six puzzles are available simultaneously.
@@ -130,7 +130,7 @@ Rules:
 - Each completed puzzle unlocks its corresponding evidence immediately.
 - Puzzle validation must be secure and server-side.
 
-The current frontend only contains a Classic Sudoku prototype.
+The Round 1 frontend and hosted backend support six variant boards, variant conflict rules, per-puzzle progress and team-scoped temporary victim unlocks. Migrations `20261127160000_round1_open_challenge.sql` and `20261127170000_round1_load_conflict_targets.sql` are applied and verified on test project `bfzlszktufjqlfiyknga` only. Authentication and full hosted Round 1 integration suites pass. Browser verification is pending because the computer-use runtime did not initialize; the server-authoritative timer is not implemented.
 
 ### Round 2 — PASSWORD BREAKER
 
@@ -203,12 +203,12 @@ A team authentication foundation migration is:
 
 Both migrations were previously applied to production and verified.
 
-A pending local migration exists:
+A local Classic Sudoku migration exists:
 
 `20261126150000_classic_sudoku_progress.sql`
 
 Important:
-- This migration is currently untracked in Git.
+- The migration has been applied to the approved test project.
 - It has not been applied to production.
 - Preserve the file.
 - Do not push it to production without explicit approval.
@@ -244,9 +244,9 @@ The production project already contains test records. Do not modify or delete th
 
 1. The Classic Sudoku solution is currently present in frontend source code.
 2. Sudoku progress is stored only in component state.
-3. The current displayed Round 1 timer is fixed and does not count down.
-4. Evidence unlocking is not connected to the database.
-5. Team and organizer login pages are placeholders.
+3. The server-authoritative Round 1 timer is not implemented.
+4. Victim discovery currently uses approved numbered demo placeholders.
+5. Browser verification of the participant flow remains pending.
 6. The homepage Round 3 description may still need updating to reflect the finalized Black Box Python challenge.
 7. Some older documentation conflicts with finalized gameplay decisions.
 
@@ -254,17 +254,13 @@ These issues must be addressed through planned, verified changes.
 
 ## 9. Development Roadmap
 
-Follow this sequence:
+Current sequence:
 
-1. Complete project instructions and reconcile gameplay documentation.
-2. Create a separate Supabase cloud test project.
-3. Complete Round 1 database integration.
-4. Finish and test all six Sudoku variations.
-5. Implement team authentication and organizer controls.
-6. Implement the remaining rounds using approved designs.
-7. Integrate scoring, timers and evidence.
-8. Perform full testing with 25 teams.
-9. Deploy and conduct the event rehearsal.
+1. Review the verified Round 1 demonstration; wait for explicit approval before beginning Round 2.
+2. Repeat browser verification and capture screenshots when the computer-use runtime is available.
+3. Implement the approved server-authoritative timer and replace demo victim placeholders only after final content is approved.
+4. Continue remaining rounds after Round 1 review and approval.
+5. Perform event rehearsal and production deployment only after explicit approval.
 
 Implement one core feature at a time.
 
@@ -290,11 +286,10 @@ Implement one core feature at a time.
 
 The next tasks are:
 
-1. Review and reconcile the remaining project documentation with confirmed decisions.
-2. Create a separate Supabase cloud test project.
-3. Inspect and validate the pending Classic Sudoku migration in the test environment.
-4. Complete Round 1 backend integration in the test environment.
-5. Implement the remaining rounds one core feature at a time.
+1. Review the verified Round 1 demonstration; do not begin Round 2 until approved.
+2. Repeat browser visual verification when the computer-use runtime is available.
+3. Implement the server-authoritative timer before event use.
+4. Replace demo victim placeholders only after final victim information is approved.
 
 Do not skip directly to production deployment.
 

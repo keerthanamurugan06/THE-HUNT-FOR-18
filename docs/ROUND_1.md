@@ -4,7 +4,11 @@
 Participants solve 9×9 Sudoku variants to uncover investigation evidence.
 
 **Provisional duration:** 20 minutes  
-**Status:** Six-variation Open Challenge Mode confirmed. Classic Sudoku persistence and server-side completion are integrated and tested on the test project; other variants, timer and evidence delivery remain pending.
+**Status:** Six-variation Open Challenge Mode, server-side completion validation, and team-scoped demo victim unlocks pass hosted integration on test project `bfzlszktufjqlfiyknga`. Authentication regression, lint, build and local Sudoku rule checks pass. Both Round 1 migrations are applied. Browser visual verification and screenshots were unavailable because the computer-use runtime failed to initialize. The server-authoritative timer is not implemented.
+
+**Diagonal Sudoku (X-Sudoku) rules (owner approved 27 November 2026):** Classic rows/columns/3×3 boxes plus both long diagonals, each containing 1–9 exactly once. This replaces Combined Sudoku for the demonstration and final event.
+
+**Demo content:** Six temporary demonstration puzzles are approved and marked demo-only. Each candidate was checked to have exactly one valid solution. The five earlier generated candidates had not been persisted, so their exact givens were unrecoverable; regenerated candidates are in the migration. Conflict-safe inserts preserve the existing Classic definition and all team progress. Victim reveals use temporary numbered placeholders; no storyline content, scoring or penalties are introduced.
 
 ### Current Classic Sudoku Implementation
 - Starting givens and saved progress load through `load_classic_sudoku()`.
@@ -15,7 +19,7 @@ Participants solve 9×9 Sudoku variants to uncover investigation evidence.
 - This implementation covers Classic only. It does not implement the other five variants or complete Round 1.
 
 ## Gameplay
-- Six Sudoku variations are included: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Combined.
+- Six Sudoku variations are included: Classic, Jigsaw, Windoku, Anti-Knight, Anti-King and Diagonal Sudoku (X-Sudoku).
 - All six variations are available simultaneously in Open Challenge Mode.
 - Teams may solve puzzles in any order and switch between puzzles freely.
 - Individual puzzle progress is retained when teams switch between puzzles.

@@ -64,7 +64,9 @@ Six Sudoku variations:
 3. Windoku
 4. Anti-Knight
 5. Anti-King
-6. Combined
+6. Diagonal Sudoku (X-Sudoku)
+
+Diagonal Sudoku uses standard Classic rules and requires each of the two long diagonals to contain 1–9 exactly once. It replaces Combined Sudoku for both the demonstration and final event (owner decision, 27 November 2026). Each verified Round 1 completion independently reveals one temporary demo victim placeholder; unrevealed participant files remain sealed and discoveries are team-scoped.
 
 All six puzzles are available simultaneously. Teams may solve them in any order and switch between puzzles without losing progress.
 
@@ -156,7 +158,7 @@ Do not begin the next major feature until the current feature has been verified 
 
 The production Supabase project already contains core schema migrations and test records.
 
-The migration `20261126150000_classic_sudoku_progress.sql` is currently an untracked local migration and must be preserved.
+The Classic Sudoku progress migration `20261126150000_classic_sudoku_progress.sql` is tracked and applied to the approved test project. Preserve the migration history. Round 1 migrations `20261127160000_round1_open_challenge.sql` and `20261127170000_round1_load_conflict_targets.sql` are also applied to test project `bfzlszktufjqlfiyknga`; no Round 1 migration has been applied to production.
 
 Never:
 - Apply migrations to production without explicit approval.

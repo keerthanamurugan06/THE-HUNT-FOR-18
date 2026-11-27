@@ -3,6 +3,21 @@
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
 
+## Round 1 Milestone 3 handoff (27 November 2026)
+
+- The local frontend calls `load_round1_sudokus` and `complete_round1_sudoku`; migration `20261127160000_round1_open_challenge.sql` was applied and confirmed on test project `bfzlszktufjqlfiyknga`.
+- `src/lib/sudoku-rules.ts` includes rule conflict detection, Jigsaw region-map validation, solution counting and puzzle definition validation.
+- Owner decision replaced Combined with Diagonal Sudoku (X-Sudoku): Classic rows/columns/3×3 boxes plus both main diagonals.
+- Six demo-only unique-solution puzzles are approved. The generator completed and validated all six variants locally; the SQL seeds preserve existing Classic data with `ON CONFLICT DO NOTHING`.
+- The earlier five puzzle candidates were only transient generator output and had not been persisted in source or the database; exact givens could not be recovered. The migration now contains regenerated, uniquely validated demo candidates. The existing Classic database definition remains conflict-protected and is not overwritten.
+- Each puzzle completion maps server-side to a distinct temporary victim placeholder. Completion inserts one team-scoped unlock row; RLS limits reads, and the participant Evidence Board restores unlocked placeholders after login/refresh.
+- Migrations `20261127160000_round1_open_challenge.sql` and `20261127170000_round1_load_conflict_targets.sql` are applied and confirmed in remote history for `bfzlszktufjqlfiyknga` only. Migration history also confirms the three earlier test migrations and auth migration.
+- Hosted authentication regression passed: public signup restriction, organizer-only provisioning, invalid Team ID/access code rejection parity, valid login, session restoration, route protection, RLS, throttling and logout.
+- Hosted Round 1 integration passed: Classic regression, all six variants, team-specific 1–6 puzzle order, saved progress restoration, clue protection, incorrect/incomplete completion rejection, server validation of the five variants not previously complete, retry idempotence, six unique victim unlocks, unauthenticated rejection and cross-team isolation.
+- Local checks passed: `node --experimental-strip-types scripts/test-sudoku-rules.mjs`, `npm.cmd run lint`, and `npm.cmd run build`; build reports a 523.8 kB minified JS chunk warning.
+- Both remote suites automatically revoked temporary sessions, suspended their test teams and cancelled test events. Append-only audit-linked records remain; no existing project data was deleted.
+- Browser verification and screenshots remain pending because the computer-use runtime failed to initialize. The server-authoritative timer is not implemented. Do not start Round 2 before owner approval.
+
 ## 1. Purpose
 
 This document allows another AI assistant or developer to continue THE HUNT FOR 18 without losing project decisions, implementation history or pending tasks.
