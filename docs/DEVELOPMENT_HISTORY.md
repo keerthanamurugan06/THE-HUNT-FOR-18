@@ -311,3 +311,13 @@ Do not claim a feature is complete unless it has been implemented and verified.
 - Updated `AGENTS.md` and relevant handoff, progress, roadmap, and round documentation. No gameplay code or database changes were made for this documentation update.
 
 **Hosted apply attempts (27 November 2026):** Reconfirmed test project ref `bfzlszktufjqlfiyknga`; dry-run listed only the approved migration. The first attempt failed at statement 31 with a CASE-expression syntax error; static review also found that insert omitted its `demo_only` column. The second attempt failed because the publish function privilege statements omitted its boolean parameter from the signature. Corrected all three issues locally. Remote migration history continues to show the migration pending, and read-only catalog checks returned no Round 3 schema objects. Awaiting approval before retry. No production access or successful hosted migration occurred.
+
+### Milestones 6 & 7 — Centralized event management (27 November 2026; local stage)
+
+**Implementation in progress:** Added organizer console, team provisioning and access reset UI, round control cards, timer-based participant route gates, mark configuration, result preview/publication, finalist selection and skip/winner controls. Added a test-only migration draft for lifecycle RPCs, deadline enforcement, mark audit/freeze, server-computed scores, immutable published standings, finalist/winner records, and status auditing. Kept the Round 2 organizer interface unchanged and did not implement the Round 4 maze.
+
+**Local verification:** `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run test:crypto`, and `git diff --check` passed. Node syntax checks for the hosted auth/Round 1/Round 2/Round 3 test scripts passed. Vite retains its bundle-size warning. Hosted tests are pending migration approval and test-function deployment.
+
+**Database:** Linked CLI target verified as `bfzlszktufjqlfiyknga` (`the-hunt-for-18-test`); the remote list showed only `20261127220000_central_event_management.sql` pending. `supabase db push --dry-run --linked` listed only that migration. No database change was applied.
+
+**Safety:** No production access, data deletion, commit, push, merge or Git reset.

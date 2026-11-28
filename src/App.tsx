@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   BrowserRouter,
   Link,
@@ -31,62 +31,15 @@ import OrganizerRound2Page from './pages/OrganizerRound2Page'
 import Round3Page from './pages/Round3Page'
 import OrganizerRound3Page from './pages/OrganizerRound3Page'
 import RequireOrganizerAuth, { OrganizerLoginPage } from './components/RequireOrganizerAuth'
+import OrganizerDashboardPage from './pages/OrganizerDashboardPage'
+import OrganizerVictimProfilesPage from './pages/OrganizerVictimProfilesPage'
+import RequireRoundAccess from './components/RequireRoundAccess'
 
 type RoundCard = {
   number: string
   name: string
   detail: string
   classification: string
-}
-
-function Countdown() {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  })
-
-  useEffect(() => {
-    const target = new Date('2026-11-28T08:00:00+05:30').getTime()
-
-    const updateCountdown = () => {
-      const difference = Math.max(0, target - Date.now())
-
-      setTimeLeft({
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / (1000 * 60)) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      })
-    }
-
-    updateCountdown()
-
-    const timer = window.setInterval(updateCountdown, 1000)
-
-    return () => window.clearInterval(timer)
-  }, [])
-
-  return (
-    <div className="countdown" aria-label="Countdown to the investigation">
-      <p className="countdown-label">TIME UNTIL THE INVESTIGATION</p>
-
-      <div className="countdown-grid">
-        {[
-          ['DAYS', timeLeft.days],
-          ['HOURS', timeLeft.hours],
-          ['MINUTES', timeLeft.minutes],
-          ['SECONDS', timeLeft.seconds],
-        ].map(([label, value]) => (
-          <div className="countdown-unit" key={String(label)}>
-            <span>{String(value).padStart(2, '0')}</span>
-            <small>{label}</small>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 }
 
 function HomePage() {
@@ -141,6 +94,9 @@ function HomePage() {
             <Link to="/team-login" className="nav-login">
               TEAM LOGIN
             </Link>
+            <Link to="/organizer-login" className="nav-login">
+              ORGANIZER LOGIN
+            </Link>
           </div>
         </nav>
       </header>
@@ -180,8 +136,6 @@ function HomePage() {
             INVESTIGATE. DECODE. CONNECT. EXPOSE.
           </p>
 
-          <Countdown />
-
           <div className="hero-actions">
             <a href="#mission" className="hunt-button primary-button">
               EXPLORE THE CASE <ArrowRight size={17} />
@@ -189,6 +143,9 @@ function HomePage() {
 
             <Link to="/team-login" className="hunt-button secondary-button">
               TEAM LOGIN
+            </Link>
+            <Link to="/organizer-login" className="hunt-button secondary-button">
+              ORGANIZER LOGIN
             </Link>
           </div>
         </div>
@@ -395,14 +352,21 @@ function App() {
           <Route path="/team-login" element={<TeamLoginPage />} />
           <Route element={<RequireTeamAuth />}>
             <Route path="/team" element={<TeamHomePage />} />
-            <Route path="/round-1" element={<Round1Page />} />
-            <Route path="/round-2" element={<Round2Page />} />
-            <Route path="/round-3" element={<Round3Page />} />
+            <Route path="/round-1" element={<RequireRoundAccess roundNumber={1}><Round1Page /></RequireRoundAccess>} />
+            <Route path="/round-2" element={<RequireRoundAccess roundNumber={2}><Round2Page /></RequireRoundAccess>} />
+            <Route path="/round-3" element={<RequireRoundAccess roundNumber={3}><Round3Page /></RequireRoundAccess>} />
           </Route>
           <Route path="/organizer-login" element={<OrganizerLoginPage />} />
           <Route element={<RequireOrganizerAuth />}>
-            <Route path="/organizer/round-2" element={<OrganizerRound2Page />} />
-            <Route path="/organizer/round-3" element={<OrganizerRound3Page />} />
+            <Route path="/organizer" element={<OrganizerDashboardPage />} />
+            <Route path="/organizer/teams" element={<OrganizerDashboardPage />} />
+            <Route path="/organizer/scoreboard" element={<OrganizerDashboardPage />} />
+            <Route path="/organizer/victims" element={<OrganizerVictimProfilesPage />} />
+            <Route path="/organizer/round-1" element={<OrganizerDashboardPage key="round-1" />} />
+            <Route path="/organizer/round-2" element={<><OrganizerDashboardPage key="round-2" /><OrganizerRound2Page embedded /></>} />
+            <Route path="/organizer/round-2/content" element={<><OrganizerDashboardPage key="round-2-content" /><OrganizerRound2Page embedded /></>} />
+            <Route path="/organizer/round-3" element={<><OrganizerDashboardPage key="round-3" /><OrganizerRound3Page embedded /></>} />
+            <Route path="/organizer/round-3/content" element={<><OrganizerDashboardPage key="round-3-content" /><OrganizerRound3Page embedded /></>} />
           </Route>
           <Route
             path="*"

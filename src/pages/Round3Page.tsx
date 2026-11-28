@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check, Clipboard, LoaderCircle, ShieldCheck, Wrench } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { clearTeamDraft, readTeamDrafts, teamDraftKey, writeTeamDraft } from '../lib/team-drafts'
 import { asciiToNumbers, base64Decode, base64Encode, columnarTranspose, factorize, gcd, modularExponentiation, modularInverse, mod, numbersToAscii, reverseText, vigenere, xorHex, xorText } from '../lib/crypto-tools'
 import './Round3Page.css'
 import './Round3SaveExtra.css'
@@ -24,6 +25,7 @@ export default function Round3Page() {
   const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [status, setStatus] = useState('')
   const [saveState, setSaveState] = useState<'idle'|'saving'|'saved'|'error'>('idle')
   const selectedRef = useRef<number|null>(null); const workspaceRef = useRef<Record<number,Workspace>>({})
+  const localDraftKey = useRef<string | null>(null); const [saveAttempt, setSaveAttempt] = useState(0)
   const [tool, setTool] = useState<ToolName>('xor'); const [input, setInput] = useState(''); const [key, setKey] = useState(''); const [parameter, setParameter] = useState(''); const [output, setOutput] = useState('')
   const [answerFormat, setAnswerFormat] = useState('text')
   const [draft, setDraft] = useState<Workspace>({ scratchpad: '', key: '', plaintext: '' }); const [finalCode, setFinalCode] = useState('')
@@ -35,10 +37,18 @@ export default function Round3Page() {
     if (rpcError) setError(rpcError.code === '42501' ? 'Round 3 is not currently authorized for participant access.' : 'The case files could not be loaded.')
     else {
       const next = data as Board
+      const { data: auth } = await supabase.auth.getUser()
+      localDraftKey.current = auth.user ? teamDraftKey(3, auth.user.id) : null
+      const cached = localDraftKey.current ? readTeamDrafts<Workspace>(localDraftKey.current) : {}
       setBoard(next)
       const chosen = selectedRef.current && next.challenges.some(challenge => challenge.slot === selectedRef.current) ? selectedRef.current : next.challenges[0]?.slot ?? null
       selectedRef.current = chosen; setSelected(chosen)
-      workspaceRef.current = Object.fromEntries(next.challenges.map(challenge => [challenge.slot, workspaceRef.current[challenge.slot] ?? challenge.workspace ?? {scratchpad:'',key:'',plaintext:''}]))
+      workspaceRef.current = Object.fromEntries(next.challenges.map(challenge => {
+        const remote = challenge.workspace ?? {scratchpad:'',key:'',plaintext:''}
+        const local = cached[String(challenge.slot)]
+        const restored = local && ['scratchpad','key','plaintext'].every(field => typeof local[field as keyof Workspace] === 'string') ? local : remote
+        return [challenge.slot, workspaceRef.current[challenge.slot] ?? restored]
+      }))
       if (chosen !== null) setDraft(workspaceRef.current[chosen])
       const chosenChallenge=next.challenges.find(challenge=>challenge.slot===chosen)
       if(chosenChallenge?.accepted_formats.length)setAnswerFormat(chosenChallenge.accepted_formats[0])
@@ -49,20 +59,28 @@ export default function Round3Page() {
 
   useEffect(() => {
     if (!current || current.completed) return
+    const snapshot = { ...draft }
     const timer = window.setTimeout(() => {
       setSaveState('saving')
-      void supabase.rpc('save_round3_workspace', { p_slot: current.slot, p_workspace: draft }).then(({ error: saveError }) => {
+      void supabase.rpc('save_round3_workspace', { p_slot: current.slot, p_workspace: snapshot }).then(({ error: saveError }) => {
         if (saveError) { setSaveState('error'); setError('Autosave could not reach the evidence archive. Your current work remains on screen; check your connection.') }
-        else setSaveState('saved')
+        else { setSaveState('saved'); if (localDraftKey.current) clearTeamDraft(localDraftKey.current, String(current.slot), snapshot) }
       })
     }, 700)
     return () => window.clearTimeout(timer)
-  }, [draft, current])
+  }, [draft, current, saveAttempt])
+
+  useEffect(() => {
+    const retryOnReconnect = () => { if (navigator.onLine) setSaveAttempt(value => value + 1) }
+    window.addEventListener('online', retryOnReconnect)
+    return () => window.removeEventListener('online', retryOnReconnect)
+  }, [])
 
   const updateWorkspace = (update: (workspace: Workspace) => Workspace) => {
     if (selected === null) return
     const next = update(workspaceRef.current[selected] ?? draft)
     workspaceRef.current = { ...workspaceRef.current, [selected]: next }
+    if (localDraftKey.current) writeTeamDraft(localDraftKey.current, String(selected), next)
     setDraft(next)
   }
   const switchChallenge = async (challenge: Challenge) => {
@@ -72,7 +90,7 @@ export default function Round3Page() {
       setSaveState('saving')
       const { error: saveError } = await supabase.rpc('save_round3_workspace', { p_slot: current.slot, p_workspace: workspaceRef.current[current.slot] ?? draft })
       if (saveError) { setSaveState('error'); setError('The current case remains open because the archive could not confirm its save. Check the connection and try switching again.'); setBusy(false); return }
-      else setSaveState('saved')
+      else { setSaveState('saved'); if (localDraftKey.current) clearTeamDraft(localDraftKey.current, String(current.slot), workspaceRef.current[current.slot] ?? draft) }
     }
     const workspace = workspaceRef.current[challenge.slot] ?? challenge.workspace ?? {scratchpad:'',key:'',plaintext:''}
     selectedRef.current = challenge.slot; setDraft(workspace)
@@ -132,19 +150,16 @@ export default function Round3Page() {
 
   return <main className="round3-page">
     <header className="round3-header"><Link to="/team" className="wordmark">THE HUNT <span>FOR 18</span></Link><span><ShieldCheck size={15}/> SECURE INVESTIGATION</span></header>
-    <section className="round3-intro"><p className="eyebrow">ROUND 03 // THE CRYPTO PROTOCOL</p><h1>BREAK THE <span>CIPHER</span></h1><p>Recover three sealed messages, reconstruct the evidence, and assemble the final unlock code. Each challenge is an independent case file.</p>{board&&<p className="round3-timer-placeholder">ROUND ACCESS: {board.round_status.toUpperCase()} · TIMER: ORGANIZER CONTROLLED</p>}{board?.is_demo_only && <p className="round3-demo">DEMONSTRATION CONTENT — TEMPORARY PLACEHOLDERS</p>}</section>
+    <section className="round3-intro"><p className="eyebrow">ROUND 03 // THE CRYPTO PROTOCOL</p><h1>BREAK THE <span>CIPHER</span></h1><p>Recover three sealed messages, reconstruct the evidence, and assemble the final unlock code. Each challenge is an independent case file.</p>{board&&<p className="round3-timer-placeholder">ROUND ACCESS: {board.round_status.toUpperCase()} · TIMER: ORGANIZER CONTROLLED</p>}</section>
     {loading ? <p className="round3-loading"><LoaderCircle className="round3-spin"/> RESTORING CRYPTOGRAPHIC CASE FILES</p> : error && !board ? <p role="alert" className="auth-error">{error}</p> : board && <>
       <div className="round3-layout"><nav className="round3-files" aria-label="Round 3 challenge files">{[...board.challenges].sort((a,b)=>a.display_order-b.display_order).map(challenge => <button key={challenge.slot} className={`round3-file-tab ${selected===challenge.slot?'active':''} ${challenge.completed?'complete':''}`} onClick={()=>void switchChallenge(challenge)} disabled={busy}><span>{String(challenge.display_order).padStart(2,'0')}</span><strong>{challenge.title}</strong><small>{challenge.completed?'COMPLETE':challenge.difficulty.toUpperCase()}</small>{challenge.completed?<Check size={16}/>:<ArrowRight size={16}/>}</button>)}</nav>
         <section className="round3-case">{current ? <>
           <p className="eyebrow">SEALED FILE {String(current.slot).padStart(2,'0')} // {current.difficulty.toUpperCase()}</p><h2>{current.title}</h2><p>{current.description}</p>
           <div className="round3-evidence"><h3>ENCRYPTED EVIDENCE</h3><pre>{current.encrypted_content}</pre></div>
-          {current.known_plaintext.length>0&&<div className="round3-known"><h3>KNOWN-PLAINTEXT FRAGMENTS</h3>{current.known_plaintext.map((part,index)=><code key={index}>{part}</code>)}</div>}
           <aside className="round3-clue"><strong>INVESTIGATION CLUE</strong><p>{current.clue}</p></aside>
-          <div className="round3-workbench"><div className="round3-workbench-title"><Wrench size={16}/><h3>CRYPTOGRAPHY WORKBENCH</h3></div><div className="round3-tool-tabs">{tools.map(item=><button key={item.id} className={tool===item.id?'active':''} onClick={()=>{setTool(item.id);setOutput('')}}>{item.label}</button>)}</div>
-            {tool==='scratchpad'?<label className="round3-field">TEAM SCRATCHPAD<textarea value={draft.scratchpad} onChange={event=>updateWorkspace(value=>({...value,scratchpad:event.target.value}))} maxLength={12000} placeholder="Notes are autosaved to this team case file."/></label>:<div className="round3-tool-form"><label className="round3-field">INPUT{tool==='factor'?' — INTEGER':tool==='modular'?' — SPACE OR COMMA SEPARATED':' — TEXT OR ENCODED BYTES'}<textarea value={input} onChange={event=>setInput(event.target.value)} maxLength={4096} placeholder={tool==='modular'?'base exponent modulus':''}/></label>{['xor','ascii','vigenere','transpose','modular'].includes(tool)&&<label className="round3-field">{tool==='ascii'?'RADIX (2, 10, 16)':tool==='transpose'?'COLUMN COUNT':tool==='modular'?'OPERATION':'KEY / OPERATION'}<input value={key} onChange={event=>setKey(event.target.value)} placeholder={tool==='ascii'?'16':tool==='transpose'?'4':'Key'}/></label>}{tool!=='factor'&&<label className="round3-field">ACTION<select value={parameter} onChange={event=>setParameter(event.target.value)}><option value="">{tool==='xor'||tool==='base64'||tool==='vigenere'?'Encode / Encrypt':'Default operation'}</option><option value="decode">Decode / Decrypt</option>{tool==='modular'&&<><option value="gcd">GCD (first two values)</option><option value="inverse">Modular inverse (first value mod second)</option><option value="power">Modular exponentiation (base, exponent, modulus)</option></>}</select></label>}<div className="round3-tool-actions"><button type="button" className="hunt-button" onClick={runTool}>RUN TOOL</button><button type="button" className="round3-copy" onClick={()=>void copyOutput()} disabled={!output}><Clipboard size={15}/> COPY TO INPUT / NOTES</button></div>{output&&<output className="round3-output" aria-live="polite">{output}</output>}</div>}</div>
-          <p className={`round3-save-state ${saveState}`} role="status">{saveState==='saving'?'SAVING TEAM CASE WORKSPACE…':saveState==='saved'?'WORKSPACE SAVED':saveState==='error'?'WORKSPACE SAVE NEEDS RETRY':''}</p>
-          {current.hint_available_count>0&&<section className="round3-hints"><h3>OPTIONAL INVESTIGATION HINTS</h3>{current.hints.map(hint=><p key={hint.index}><strong>HINT {hint.index}:</strong> {hint.text}{hint.configured_deduction?` — configured deduction ${hint.configured_deduction} recorded (score processing awaits the shared scoring system).`:''}</p>)}{!current.completed&&current.hint_count<current.hint_available_count&&<button className="round3-copy" onClick={()=>void requestHint()} disabled={busy}>REQUEST NEXT HINT</button>}</section>}
-          {current.completed?<div className="round3-reward" role="status"><Check/> SERVER VERIFIED — VICTIMS {current.victims.map(number=>String(number).padStart(2,'0')).join(' AND ')} DISCOVERED <br/>RECOVERED CODE FRAGMENT: <strong>{current.fragment}</strong></div>:<form className="round3-submit" onSubmit={event=>void submitChallenge(event)}><h3>SUBMIT RECOVERED SOLUTION</h3><label className="round3-field">DECRYPTED MESSAGE FORMAT<select value={answerFormat} onChange={event=>setAnswerFormat(event.target.value)}>{current.accepted_formats.map(format=><option key={format} value={format}>{format.toUpperCase()}</option>)}</select></label><label className="round3-field">RECOVERED KEY<input value={draft.key} onChange={event=>updateWorkspace(value=>({...value,key:event.target.value}))} autoComplete="off" maxLength={512}/></label><label className="round3-field">DECRYPTED MESSAGE<textarea value={draft.plaintext} onChange={event=>updateWorkspace(value=>({...value,plaintext:event.target.value}))} autoComplete="off" maxLength={6000}/></label><button className="hunt-button" disabled={busy}>{busy?'VALIDATING WITH SECURE ARCHIVE':'SUBMIT FOR SERVER VALIDATION'}</button></form>}
+          {current.completed?<><label className="round3-field">KEY ENTRY<input value={draft.key} autoComplete="off" disabled/></label><label className="round3-field">DECRYPTED ANSWER ENTRY<textarea value={draft.plaintext} autoComplete="off" disabled/></label><div className="round3-reward" role="status"><Check/> SERVER VERIFIED — VICTIMS {current.victims.map(number=>String(number).padStart(2,'0')).join(' AND ')} DISCOVERED <br/>RECOVERED CODE FRAGMENT: <strong>{current.fragment}</strong></div></>:<form className="round3-submit" onSubmit={event=>void submitChallenge(event)}><label className="round3-field">KEY ENTRY<input value={draft.key} onChange={event=>updateWorkspace(value=>({...value,key:event.target.value}))} autoComplete="off" maxLength={512} disabled={busy}/></label><label className="round3-field">DECRYPTED ANSWER ENTRY<textarea value={draft.plaintext} onChange={event=>updateWorkspace(value=>({...value,plaintext:event.target.value}))} autoComplete="off" maxLength={6000} disabled={busy}/></label><button className="hunt-button" type="submit" disabled={busy}>{busy?'VALIDATING WITH SECURE ARCHIVE':'SUBMIT ANSWERS'}</button></form>}
+          {current.hint_available_count>0&&<section className="round3-hints"><h3>OPTIONAL INVESTIGATION HINTS</h3>{current.hints.map(hint=><p key={hint.index}><strong>HINT {hint.index}:</strong> {hint.text}{hint.configured_deduction?` — configured deduction ${hint.configured_deduction} recorded.`:''}</p>)}{!current.completed&&current.hint_count<current.hint_available_count&&<button className="round3-copy" onClick={()=>void requestHint()} disabled={busy}>REQUEST NEXT HINT</button>}</section>}
+          <details className="round3-player-advanced"><summary>ADVANCED INVESTIGATION TOOLS</summary>{current.known_plaintext.length>0&&<div className="round3-known"><h3>KNOWN-PLAINTEXT FRAGMENTS</h3>{current.known_plaintext.map((part,index)=><code key={index}>{part}</code>)}</div>}<div className="round3-workbench"><div className="round3-workbench-title"><Wrench size={16}/><h3>CRYPTOGRAPHY WORKBENCH</h3></div><div className="round3-tool-tabs">{tools.map(item=><button key={item.id} className={tool===item.id?'active':''} onClick={()=>{setTool(item.id);setOutput('')}}>{item.label}</button>)}</div>{tool==='scratchpad'?<label className="round3-field">TEAM SCRATCHPAD<textarea value={draft.scratchpad} onChange={event=>updateWorkspace(value=>({...value,scratchpad:event.target.value}))} maxLength={12000} placeholder="Notes are autosaved to this team case file."/></label>:<div className="round3-tool-form"><label className="round3-field">INPUT<textarea value={input} onChange={event=>setInput(event.target.value)} maxLength={4096}/></label>{['xor','ascii','vigenere','transpose','modular'].includes(tool)&&<label className="round3-field">KEY / PARAMETER<input value={key} onChange={event=>setKey(event.target.value)}/></label>}<label className="round3-field">ACTION<select value={parameter} onChange={event=>setParameter(event.target.value)}><option value="">Default operation</option><option value="decode">Decode / Decrypt</option>{tool==='modular'&&<><option value="gcd">GCD</option><option value="inverse">Modular inverse</option><option value="power">Modular exponentiation</option></>}</select></label><div className="round3-tool-actions"><button type="button" className="hunt-button" onClick={runTool}>RUN TOOL</button><button type="button" className="round3-copy" onClick={()=>void copyOutput()} disabled={!output}><Clipboard size={15}/> COPY TO INPUT / NOTES</button></div>{output&&<output className="round3-output" aria-live="polite">{output}</output>}</div>}</div><p className={`round3-save-state ${saveState}`} role="status">{saveState==='saving'?'SAVING TEAM CASE WORKSPACE…':saveState==='saved'?'WORKSPACE SAVED':saveState==='error'?'WORKSPACE SAVE NEEDS RETRY':''}</p></details>
         </>:<p>Select a case file.</p>}</section></div>
       {error&&<p className="round3-message error" role="alert">{error}</p>}{status&&<p className="round3-message" role="status">{status}</p>}
       <section className="round3-final"><p className="eyebrow">FINAL RECOVERED CODE</p><h2>THREE FRAGMENTS. ONE ACCESS CODE.</h2>{board.challenges.filter(challenge=>challenge.completed).length<3?<p>Complete all three independent challenges to reveal the code fragments and enable verification.</p>:board.final_code_complete?<strong>FINAL CODE VERIFIED — ROUND 4 REMAINS LOCKED UNTIL THE ORGANIZER AUTHORIZES IT.</strong>:<form onSubmit={event=>void submitFinal(event)}><label className="round3-field">FINAL UNLOCK CODE<input value={finalCode} onChange={event=>setFinalCode(event.target.value)} required autoComplete="off"/></label><button className="hunt-button" disabled={busy}>{busy?'VERIFYING':'VERIFY FINAL CODE'}</button><small>Attempts are unlimited. Verification never activates Round 4.</small></form>}</section>

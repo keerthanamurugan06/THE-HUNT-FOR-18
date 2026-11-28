@@ -47,7 +47,7 @@ export function OrganizerLoginPage() {
         setError('This account is not authorized for organizer access. Use an account provisioned with an organizer role.')
         return
       }
-      window.location.assign('/organizer/round-2')
+      window.location.assign('/organizer')
     } catch {
       setError('The organizer sign-in service could not be reached. Check your connection and try again.')
     } finally {

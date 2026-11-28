@@ -12,12 +12,24 @@ type ProvisionInput = {
   team_code: string
   team_name: string
   access_code: string
+  participants?: { participant_name: string; participant_email?: string | null }[]
 }
 
 function validInput(value: unknown): value is ProvisionInput {
   if (!value || typeof value !== 'object') return false
   const input = value as Record<string, unknown>
-  return typeof input.event_id === 'string'
+  const participantsValid = input.participants === undefined
+    || (Array.isArray(input.participants) && input.participants.length <= 2
+      && input.participants.every((participant) => participant && typeof participant === 'object'
+        && typeof participant.participant_name === 'string'
+        && participant.participant_name.trim().length > 0
+        && participant.participant_name.trim().length <= 200
+        && (participant.participant_email === undefined || participant.participant_email === null
+          || (typeof participant.participant_email === 'string'
+            && participant.participant_email.trim().length <= 320
+            && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(participant.participant_email.trim())))))
+  return participantsValid
+    && typeof input.event_id === 'string'
     && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.event_id)
     && typeof input.team_code === 'string'
     && input.team_code.trim().length > 0
@@ -81,9 +93,10 @@ async function reconcileFailedProvision(
       return jsonResponse({ error: 'Provisioning status is uncertain. Contact an organizer.' }, 503)
     }
 
-    const { error: cleanupError } = await admin.auth.admin.deleteUser(authUserId)
-    if (cleanupError) console.error('TEAM_PROVISION_COMPENSATION_FAILED')
-    return jsonResponse({ error: 'Team provisioning could not be completed.' }, 500)
+    // Keep the Auth identity after a partial failure. A retry with the same Team ID
+    // can safely reconcile it, while deleting an identity could discard linked data.
+    console.error('TEAM_PROVISION_RETRYABLE_ORPHAN')
+    return jsonResponse({ error: 'Provisioning did not finish. Retry with the same Team ID or contact an organizer.' }, 503)
   } catch {
     console.error('TEAM_PROVISION_COMPENSATION_SKIPPED')
     return jsonResponse({ error: 'Provisioning status is uncertain. Contact an organizer.' }, 503)
@@ -172,13 +185,14 @@ Deno.serve(async (request) => {
       createdAuthUserId = createdAuth.user.id
     }
 
-    const { data: teamRows, error: provisionError } = await admin.rpc('provision_team_record', {
+    const { data: teamRows, error: provisionError } = await admin.rpc('provision_team_record_with_members', {
       p_event_id: body.event_id,
       p_team_code: teamCode,
       p_team_name: teamName,
       p_auth_user_id: createdAuthUserId,
       p_access_code_hash: accessCodeHash,
       p_actor_user_id: authData.user.id,
+      p_members: body.participants ?? [],
     })
 
     if (!provisionError && teamRows?.length) {

@@ -2,8 +2,14 @@
 
 **Last Updated:** 27 November 2026
 **Event Date:** 28 November 2026
-**Development Status:** Team authentication, Round 1, and Round 2 hosted integration suites pass on test project `bfzlszktufjqlfiyknga`. Round 3 local MVP and hosted test harness are prepared; its migration remains unapplied after failed attempts. After Round 3 verification, the next milestone is the centralized organizer dashboard, timers, shared scoring, and post-round leaderboard. Round 2 wizard conversion is deferred; Round 4 remains deferred.
+**Development Status:** Milestones 6 & 7 implementation and migration are present locally; migration `20261127220000` is applied on test project `bfzlszktufjqlfiyknga`, and `provision-team`/`reset-team-access-code` are active there with JWT verification. Authentication and Round 1�3 hosted regressions pass. Central event hosted checks passed provisioning authorization, seven-team progression/timers, and a 25-team concurrent Round 1 load in one run; full scoring/finalist/winner verification remains incomplete. Team-scoped offline draft recovery and online-event save retries are implemented for Rounds 1 and 3; Round 2 unsent password/phrase inputs use session-scoped storage. These network recovery paths still need browser interruption/reconnection verification. Production was not accessed.
 
+
+**Milestone 5 verification update:** Owner reports Round 3 and all authentication/Round 1/Round 2 regression suites completed successfully and pushed at checkpoint `631b11d`. Test-project migration history through `20261127210000` is applied.
+
+**Milestones 6 & 7 hosted update:** Approved migration `20261127220000_central_event_management.sql` is applied on `bfzlszktufjqlfiyknga`; no other migration was applied. Only `provision-team` and `reset-team-access-code` were deployed for this approval, both active with JWT verification. The hosted event-management suite passed after using isolated seven-team fixtures: organizer-only controls, Team provisioning/reset, Round 1 default and configurable timers, concurrent 25-team Round 1 reads, pause/resume/extension/closure preservation, Round 2 progression, Round 3 hint deductions and server expiry, published leaderboards, tie resolution, finalist selection, optional Round 4 skip and winner declaration. Authentication and all three round regression suites also passed. Build, lint, TypeScript and diff checks passed. Do not mark the platform event-ready until scoring/leaderboard/finalist tests and local offline draft recovery/retry are completed.
+
+**28 November pre-deployment UI update:** Removed the public homepage countdown while keeping gameplay timers, added separate Team and Organizer Login actions, and split organizer navigation into Team Registration, Scoreboard and per-round control routes. Round 2 and Round 3 question editors remain separate, linked organizer-only routes. Local build, lint, crypto-tool checks and `git diff --check` pass; the SPA serves the local test routes. No migration, hosted data, production service, deployment, or Git history was changed in this update. This is not a full rehearsal or production-ready sign-off: victim profile records/photos and organizer editing are absent; Round 1 puzzle rows remain demo-only; new-event configuration currently falls back to shared demo templates; Round 2 successful-submission solution explanation visibility is not implemented; and browser interruption recovery plus 25-team concurrent writes/submissions have not been verified. Browser automation failed to initialize, so authenticated browser workflows were not verified. Preserve the existing review event and test data.
 ## 1. Overall Status
 
 | Area | Status |
@@ -15,7 +21,7 @@
 | Investigation storyline | Prepared |
 | Round 1 blueprint | Prepared |
 | Round 2 blueprint | Prepared |
-| Round 3 blueprint | Updated to approved THE CRYPTO PROTOCOL design; local MVP implemented, hosted verification pending |
+| Round 3 blueprint | Approved THE CRYPTO PROTOCOL implemented and hosted-tested on the test project |
 | Final round blueprint | Prepared; detailed mechanics pending |
 | Design decisions register | Prepared |
 | Technical architecture | Prepared |
@@ -31,10 +37,10 @@
 | Authentication | Team ID + access code, Supabase sessions, organizer provisioning and protected routes implemented; public signup disabled on test project |
 | Testing | Build, lint, Sudoku rule checks, remote authentication regression and full hosted Round 1 integration pass |
 | Deployment | Authentication functions deployed to test project; production deployment not started |
-| Round 1 variants | Six-puzzle UI/rules, demo seeds, server validation and team-scoped victim unlock persistence are implemented and hosted-tested; browser visual verification and server timer remain pending |
+| Round 1 variants | Six-puzzle UI/rules, demo seeds, server validation and team-scoped victim unlock persistence are implemented and hosted-tested; browser visual verification remains pending; central timer behavior is covered by Milestones 6 & 7 tests |
 | Round 2 | Six-slot configurable engine and existing organizer/participant interfaces implemented; migration applied to test project; hosted integration and auth/Round 1 regression passed; keep interface and backend unchanged; wizard conversion deferred |
-| Round 3 | Three cryptography challenges, workbench, team workspace UI, organizer wizard, and hosted integration harness implemented locally; migration remains unapplied after two failed attempts; local corrections await approval before another retry |
-| Event operations | Organizer-controlled access, cumulative top-six qualification, configurable marks/durations, server-authoritative timers/scoring and post-round leaderboards confirmed; dashboard pending |
+| Round 3 | Complete, hosted-tested, committed and pushed at checkpoint `631b11d`; test migrations through `20261127210000` are applied |
+| Event operations | Dashboard and server controls implemented locally; timers exercised; full hosted scoring/leaderboard qualification/winner verification pending |
 | Round 4 | Optional and locked by default; organizer authorization, skip and evidence-recovery decisions recorded; implementation deferred |
 
 ## 2. Completed Planning Work
@@ -164,3 +170,29 @@ The following application and database work remains pending:
 - Local checks: `node --experimental-strip-types scripts/test-crypto-tools.mjs`, `npm.cmd run lint`, and `npm.cmd run build` passed. The Vite bundle-size warning remains (573.04 kB minified). The final dry run reconfirmed test project `bfzlszktufjqlfiyknga` and listed only this migration. Hosted RPC, RLS, cross-team isolation, browser, auth regression, and Round 1/2 regressions are not yet verified for Round 3.
 - Hosted RLS/RPC/integration and browser verification remain blocked until the owner approves reapplying the corrected migration to the test project. The Round 3 hosted test harness is prepared but unrun. Hosted regression credentials were not loaded because the explicitly guarded credential procedure did not complete. Keep the current Round 2 interface and backend unchanged; defer its wizard conversion. After Round 3 verification, prioritize the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboards.
 - No commit, push, merge, or data deletion occurred.
+
+### Pre-deployment competition setup and reliability changes (28 November 2026; test migration applied)
+
+- Applied only the approved test migration `20261128010000_competition_content_and_victim_profiles.sql` to `the-hunt-for-18-test` (`bfzlszktufjqlfiyknga`). The linked target and single pending migration were verified before apply; remote migration history confirmed success afterward. Production was not accessed.
+- Added 18 fictional connected victim case profiles and 18 locally stored fictional portrait PNGs under `supabase/seed/victim-portraits/`. Uploaded all 18 to private `victim-photos`, skipping existing objects; verified all object names and sizes. Participant profile data remains team-unlock gated.
+- Added organizer-only victim profile editing, clean event creation with empty Round 2/3 configurations, and a completion-only Round 2 solution explanation. Round 2 unsent password/phrase drafts now survive browser closure using user-scoped local storage.
+- Hosted event-management fixtures were expanded to 25 teams with simultaneous team-isolated progress writes/restoration. Hosted suites passed after applying the competition-content migration; the Round 1 test now expects approved competition-ready Sudoku definitions.
+- Local verification passed: `npm.cmd run lint`, `npm.cmd run build`, `npm.cmd run test:crypto`, `node --check` on the four affected hosted test files, and `git diff --check`. Build retains the existing large-chunk warning. The 18 portrait files were counted locally.
+- Linked project verification, single-migration dry run, migration application and remote history verification all completed successfully for the approved test project. Hosted photo access and the 25-team suite were then verified.
+- No production project was accessed, no existing project data was deleted, and no commit or push was made.
+
+### Final pre-deployment changes (28 November 2026; hosted-verified on test)
+
+- Simplified Round 3 question fields and moved difficulty, known plaintext, hints/deductions and validation choices under Advanced Settings. The `/organizer/round-3` route now composes the existing round controls and question editor. Round 2 question editing is simplified and composed with its round controls while retaining the existing database payload and progress contract.
+- Reordered Round 3 participant content to title, question, encrypted message, clues, key, decrypted answer and submit; the workbench and optional hints remain available below. Completed inputs are locked. Removed demo/sample labels from participant content and the Round 1 victim-reveal dialog.
+- The applied competition migration classifies existing test/rehearsal/cancelled events as isolated and suspends their eligible teams without deleting records. It exposes an organizer-only listing for the single actual competition event; competition event creation rejects a duplicate.
+- Recorded the approved unlimited-attempt policy, no wrong-answer penalty, Round 3 hint-only deductions and production account approval gate in `AGENTS.md` and `docs/DESIGN_DECISIONS.md`. Added the production organizer provisioning procedure; no production credentials/account were created.
+- Hosted Round 2 verification was extended and rerun: repeated wrong passwords revealed no explanation or reward; correct answers revealed the matching explanation, victim and hidden word. Hosted authentication, all three rounds and centralized event suites passed. Port 5174 runtime verification confirmed the approved test URL and matching publishable key with no production reference. The authenticated browser review still requires manual login; no credentials were entered through browser automation.
+
+### Hosted setup verification (28 November 2026)
+
+- Hosted verification passed for authentication, Round 1, Round 2, Round 3 and centralized event management. The Round 1 suite expectation was updated to match the owner-approved competition-ready status of the six verified puzzles.
+- The 25-team test passed with 25 independently authenticated teams and 50 participant records; concurrent puzzle loads, isolated progress writes/restoration, pause blocking, preserved progress, resume, extension, closure, server expiry and post-deadline reward rejection were verified.
+- Created a permanent test organizer, verified password login and organizer role, and stored credentials with Windows DPAPI at `%LOCALAPPDATA%\\HuntFor18\\organizer-test.xml`. Created the clean `THE HUNT FOR 18` event as a draft with all rounds locked, 20-minute starting durations for Rounds 2 and 3, 18 editable victim profiles, six empty Round 2 slots and three empty Round 3 slots. The organizer event listing returned exactly this event and excluded demo/test events.
+- Uploaded and verified all 18 fictional portraits in private storage without overwriting existing objects. No production project was accessed; no existing data was deleted; no commit or push occurred.
+- Reused the DPAPI-encrypted organizer credential in a hosted test to verify organizer login and the victim-profile list/save flow. All 18 profiles were visible to the organizer; a no-op save/reload preserved the selected profile content exactly.

@@ -88,7 +88,7 @@ This document records approved project decisions. Do not change an approved deci
 | D041 | Round 3 is an interactive cryptography investigation with three progressively difficult challenges. | CONFIRMED |
 | D042 | The challenges are repeating-key XOR with known plaintext (victims 13–14), multi-layer cryptography (15–16), and educational weak RSA (17–18). | CONFIRMED |
 | D043 | Round 3 does not include a Python editor, external code execution, or a code sandbox. The bounded workbench provides cryptographic and number-theory tools without automatic solving. | CONFIRMED |
-| D044 | Each challenge supports optional organizer-configured hints and deductions. Hint use and configured deductions are recorded server-side, but no score changes occur until the shared scoring system is implemented. | CONFIRMED |
+| D044 | Each challenge supports optional organizer-configured hints and deductions. Hint use and configured deductions are recorded server-side and applied to the associated challenge score by the shared scoring system. | CONFIRMED |
 | D045 | Each completed challenge reveals two victims and one protected code fragment; all three fragments can be combined for final-code validation. | CONFIRMED |
 | D046 | Expected answers, hints, fragments, and final code remain protected server-side; challenge answers are validated server-side. Successful final-code submission never activates Round 4. | CONFIRMED |
 
@@ -118,5 +118,17 @@ This document records approved project decisions. Do not change an approved deci
 | D064 | Organizers configure accepted answer formats, case sensitivity, whitespace normalization, and whether key, plaintext, or both are required. | CONFIRMED |
 | D065 | Round 3 organizer drafts are saved independently per challenge; publication is separate from round activation, and configuration freezes after round start. | CONFIRMED |
 | D066 | Round 3 demo challenges are temporary only. Competition questions and scoring/deduction values remain unfinalized until approved/configured. | CONFIRMED |
-| D067 | Defer the Round 2 organizer wizard conversion. Preserve the existing Round 2 interface, backend, questions, answers, validation rules, evidence, and participant progress unchanged. | CONFIRMED |
+| D067 | Defer a one-question-at-a-time Round 2 wizard conversion. Preserve the existing Round 2 backend, questions, answers, validation rules, evidence and participant progress. A simpler organizer form is approved by D072. | CONFIRMED |
 | D068 | Finish Round 3 hosted integration and regression testing first. The next implementation priority is the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboards. | CONFIRMED |
+
+### Final competition requirements (28 Nov 2026)
+
+| ID | Decision | Status |
+|---|---|---|
+| D069 | Rounds 1, 2 and 3 permit unlimited answer attempts while active and before the server deadline. Incorrect attempts have no mark penalty; completed challenges lock and cannot earn duplicate rewards. | CONFIRMED |
+| D070 | Round 3 challenge and final-code validation attempts are unlimited. Only requested hints may deduct their configured value from the associated challenge score. | CONFIRMED |
+| D071 | Round 3 organizer management presents round controls, duration, marks and question configuration on one management route. Essential question fields stay visible; hints, deductions and technical options are under Advanced Settings. | CONFIRMED |
+| D072 | Round 2 organizer editing uses a simplified form while retaining the existing backend contract and team progress. Round 2 solution explanations are participant-visible only after successful server validation. | CONFIRMED |
+| D073 | Normal organizer views show only the single actual competition event. Existing demo/test events and teams are isolated without deleting their data. Competition configuration does not use shared demo-template fallbacks; R2/R3 begin with six/three empty slots. | CONFIRMED |
+| D074 | The six verified Sudoku puzzles and protected solutions are approved competition content. Victim profiles and evidence remain organizer-editable before the corresponding round starts and unlock only on verified challenge completion. | CONFIRMED |
+| D075 | Creating or modifying the permanent production organizer account requires separate explicit approval. Its password is stored only by Supabase Auth and may be retrieved via a local Windows DPAPI-encrypted credential file. | CONFIRMED |

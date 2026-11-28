@@ -5,16 +5,14 @@
 
 ## 1. Immediate Objective
 
-Prepare and implement a reliable Minimum Viable Product for the event.
-
-Prioritize essential functionality, security, testing and deployment over optional features.
+Finish Milestones 6 & 7 verification and mandatory network-reliability work before declaring event readiness. The approved migration is applied only on test project `bfzlszktufjqlfiyknga`; authentication and Round 1–3 hosted regression suites pass.
 
 ## 2. Remaining Planning Tasks
 
 ### Gameplay decisions
 - Round 2 and Round 3 victim counts and non-blocking progression are confirmed; keep exact victim/story content and all mark values uninvented until approved.
 - Prepare Round 2's six challenges and Round 1 evidence dependency for owner approval.
-- Round 3's approved crypto design replaces the earlier Python proposal. Temporary demo templates are in the pending migration; actual competition questions and scoring/deduction values remain to be configured and approved.
+- Round 3 approved crypto design replaces the earlier Python proposal. Test migrations through `20261127210000` have been applied and hosted-tested; actual competition questions and scoring/deduction values remain organizer-configurable.
 - Round 4 is optional; its maze and checkpoint content remain pending.
 
 ### Technical decisions
@@ -40,18 +38,13 @@ This is only the core foundation. The full database design and gameplay schema a
 
 ## 3. Immediate Development Priorities
 
-1. Obtain approval to retry the latest corrected `20261127190000_round3_crypto_protocol.sql` on test project `bfzlszktufjqlfiyknga` only. The previous attempts left no migration record or Round 3 schema objects. Local corrections address the CASE syntax, insert column list, and publish function privilege signature.
-2. After successful application, verify the migration and Round 3 objects; run the hosted Round 3 integration/security suite, authentication/Round 1/Round 2 regressions, and browser review.
-3. Complete Milestone 5 and record actual verification results.
-4. Build the centralized organizer dashboard, configurable round/challenge marks, server-authoritative timers, shared scoring, and after-round leaderboards.
-5. Keep the existing Round 2 organizer interface and backend unchanged. The Round 2 wizard conversion is deferred.
-6. Optional Round 4; keep it locked unless authorized and support the approved skip/recovery policies. End-to-end testing and deployment follow after approval.
+1. Verify participant draft recovery and reconnect retry in browser interruption tests.
+2. Verify local unsaved-progress restoration and automatic retry after reconnection across participant rounds.
+3. Verify pause, resume and round closure preserve saved progress; complete end-to-end readiness checks.
+4. Keep the Round 2 organizer interface unchanged and the Round 4 maze deferred.
 
-Do not invent challenge content or scoring values. Keep hosted work on test project `bfzlszktufjqlfiyknga`; never access production. Round 3 migration `20261127190000_round3_crypto_protocol.sql` is a local draft and requires explicit approval before application.
+Use only test project `bfzlszktufjqlfiyknga`; never access production. Do not commit/push without approval.
 
-The Round 3 migration remains a local draft after two failed attempts; explicit approval is required before retrying the corrected file. Do not change the Round 2 organizer interface or backend while its wizard conversion is deferred.
-
-Do not apply pending migrations to production or modify production event data without explicit approval. Reduce scope rather than compromise security or reliability.
 ## 4. Development Workflow
 
 For every feature:
@@ -94,8 +87,8 @@ A feature is complete only when:
 **Target date:** 27 November 2026 or next implementation session
 
 First tasks:
-1. Obtain explicit approval to apply the dry-run migration only to `bfzlszktufjqlfiyknga`.
-2. After the migration is approved and applied, run hosted Round 3 tests and existing regressions.
-3. After Round 3 verification, start the centralized organizer dashboard, timers, shared scoring and leaderboard milestone.
-4. Leave the Round 2 organizer wizard deferred; preserve the existing interface and backend.
-5. Continue using only test project `bfzlszktufjqlfiyknga`; do not deploy to production without separate approval.
+1. Exercise offline draft restoration/retry in the browser and load-test simultaneous participant writes.
+2. Verify durable local drafts and automatic reconnect retry in browser interruption tests.
+3. Run final regression and reliability tests.
+4. Preserve the Round 2 interface and keep Round 4 maze deferred.
+5. Use only the approved test project; no production operations.

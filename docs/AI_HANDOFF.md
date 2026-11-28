@@ -1,14 +1,13 @@
-# THE HUNT FOR 18 – AI Handoff Guide
+# THE HUNT FOR 18 — AI Handoff Guide
 
-## Milestone 5 Round 3 current handoff (27 November 2026)
+## Milestones 6 & 7 current handoff (27 November 2026)
 
-- Approved Round 3 design is THE CRYPTO PROTOCOL, replacing the older BLIND CODE/Python concept. See `docs/ROUND_3.md` and `docs/DESIGN_DECISIONS.md`.
-- Local participant and organizer routes, bounded crypto workbench, team workspace autosave UI, and three-question organizer draft wizard are implemented. Local math tests, lint, and build pass; build retains the >500 kB warning.
-- Migration `supabase/migrations/20261127190000_round3_crypto_protocol.sql` remains unapplied after two failed attempts. Remote history lists it as pending and read-only catalog checks found no Round 3 objects. Local fixes address CASE syntax, the secret insert column list, and the publish-function privilege signature; obtain approval before retrying.
-- A hosted Round 3 integration harness is prepared at `supabase/tests/round3-crypto-protocol.remote.mjs`, but it has not run. The test credential procedure did not finish; do not print credentials or bypass automatic review.
-- After migration success, run Round 3 hosted security/integration, auth/R1/R2 regressions, and browser verification. Then prioritize the centralized organizer dashboard, timers, shared scoring, and post-round leaderboards. Keep the existing Round 2 organizer interface/backend unchanged; its wizard conversion is deferred.
-- No production operation, data deletion, commit, or push occurred. Round 4 has not started. Do not access production.
-
+- Milestone 5 is complete, hosted-tested and committed/pushed at checkpoint `631b11d`. The user reports authentication and all compulsory rounds passed hosted integration.
+- Implemented the centralized organizer dashboard, team controls, round lifecycle, server-authoritative timers, shared scoring, post-round leaderboards, finalists and optional Round 4 skip/winner selection locally; finish hosted verification. Keep the Round 2 organizer interface unchanged and do not implement the Round 4 maze.
+- Local changes include `/organizer`, team provisioning/access reset controls, server timer route gates, published participant standings and migration `supabase/migrations/20261127220000_central_event_management.sql`.
+- Migration `20261127220000_central_event_management.sql` was applied only to `bfzlszktufjqlfiyknga` (`the-hunt-for-18-test`); remote history confirms it. Only `provision-team` and `reset-team-access-code` were deployed for this approval, both active with JWT verification.
+- Lint, build and diff checks passed. Auth, Round 1–3, and the hosted event-management suite passed. Checks covered timer controls/expiry, a 25-team concurrent Round 1 read, scores/deductions, published leaderboards, finalist resolution, Round 4 skip and winner declaration. Browser-level offline recovery/reconnection testing remains pending.
+- Preserve all gameplay and progress. Never access production, expose credentials, delete existing project data, or commit/push/merge/reset.
 ## Round 2 Milestone 4 archived handoff (27 November 2026)
 
 - Local participant and minimal organizer interfaces are implemented for database-driven Round 2 configuration and play. See `docs/ROUND_2.md` and migration draft `supabase/migrations/20261127180000_round2_password_breaker.sql`.

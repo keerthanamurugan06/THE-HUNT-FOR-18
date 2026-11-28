@@ -66,7 +66,7 @@ Six Sudoku variations:
 5. Anti-King
 6. Diagonal Sudoku (X-Sudoku)
 
-Diagonal Sudoku uses standard Classic rules and requires each of the two long diagonals to contain 1–9 exactly once. It replaces Combined Sudoku for both the demonstration and final event (owner decision, 27 November 2026). Each verified Round 1 completion independently reveals one temporary demo victim placeholder; unrevealed participant files remain sealed and discoveries are team-scoped.
+Diagonal Sudoku uses standard Classic rules and requires each of the two long diagonals to contain 1–9 exactly once. It replaces Combined Sudoku for both the demonstration and final event (owner decision, 27 November 2026). Each verified Round 1 completion independently reveals one of the 18 event-scoped victim case files; unrevealed participant files remain sealed and discoveries are team-scoped.
 
 All six puzzles are available simultaneously. Teams may solve them in any order and switch between puzzles without losing progress.
 
@@ -75,6 +75,8 @@ Each completed puzzle unlocks its associated evidence immediately.
 Each team receives an independently randomized display order.
 
 Solutions must be validated securely on the server. Never expose protected solutions in frontend code.
+
+Teams may make unlimited Sudoku solution attempts while Round 1 is running and before its server-authoritative deadline. Incorrect submissions carry no mark penalty; a completed puzzle is locked and rewards cannot be duplicated.
 
 ### Round 2 — PASSWORD BREAKER
 
@@ -98,10 +100,11 @@ Three cryptography challenges: repeating-key XOR, layered cryptography, and educ
 - Team workspaces and hint use are team-scoped and server-persisted.
 - Expected keys/plaintexts, hint content, fragments, and the final unlock code remain protected server-side.
 - Organizers configure answer formats, case sensitivity, whitespace normalization, required key/plaintext fields, hints, and deductions.
-- Hint usage and configured deductions are recorded server-side; do not award or deduct scores until the shared scoring system is implemented.
+- Hint usage and configured deductions are recorded server-side and applied to the associated challenge score by the shared scoring system. Incorrect attempts have no penalty.
 - Publication is separate from round activation. Competition configuration freezes once the round starts.
 - Successful final-code submission never activates Round 4.
-- Current status: local MVP and hosted test harness are present; migration `20261127190000_round3_crypto_protocol.sql` remains unapplied after failed attempts. Obtain approval before retrying the corrected migration.
+- Teams may make unlimited key/plaintext and final-code attempts while Round 3 is running and before its deadline. Incorrect submissions carry no mark penalty. Only requested hints may apply configured mark deductions; completed challenges stay locked.
+- Milestone 5 is complete, hosted-tested, committed and pushed at checkpoint `631b11d`. Round 3 migrations `20261127190000`, `20261127200000` and `20261127210000` are applied on test project `bfzlszktufjqlfiyknga`; hosted Round 3 integration and security tests passed.
 
 Actual competition content and any scoring/deduction values remain unfinalized.
 
@@ -153,9 +156,9 @@ Do not begin the next major feature until the current feature has been verified 
 
 ### Current milestone order
 
-1. Complete Round 3 migration, hosted security/integration verification, and auth/Round 1/Round 2 regression checks. The migration retry requires explicit approval after the previous SQL failures.
-2. Implement the centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboard release.
-3. Keep the existing Round 2 organizer interface and backend unchanged. The proposed Round 2 question wizard is deferred and must not be started unless the owner reopens it.
+1. Milestone 5 Round 3 is complete and hosted-tested on the approved test project.
+2. Implement Milestones 6 & 7: centralized organizer dashboard, server-authoritative timers, shared scoring, and post-round leaderboard release.
+3. Keep the existing Round 2 backend and participant progress intact. Its organizer form may be simplified without changing the database contract.
 4. Keep Round 4 deferred and locked by default.
 
 ## 6. Security Requirements
@@ -262,6 +265,7 @@ Ask before:
 - Making assumptions about unfinished mechanics.
 - Changing the database architecture.
 - Applying production migrations.
+- Creating or modifying a production organizer account.
 - Performing Git operations.
 - Deleting or replacing existing work.
 - Making significant visual redesigns.

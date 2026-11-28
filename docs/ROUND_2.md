@@ -2,7 +2,7 @@
 
 **Status (27 November 2026):** Migration `20261127180000_round2_password_breaker.sql` is applied to the approved test project `bfzlszktufjqlfiyknga`. Hosted Round 2 integration, authentication regression and Round 1 regression passed. Browser verification confirmed the participant and organizer route gates; signed-in gameplay UI was not browser-tested. No production operation was performed.
 
-**Organizer interface decision (27 November 2026):** Keep the existing Round 2 organizer interface and backend unchanged. The proposed one-question-at-a-time wizard conversion is deferred. Preserve existing questions, answers, validation, evidence, and participant progress.
+**Organizer interface decision (28 November 2026):** The Round 2 organizer form is being simplified and combined on its existing management route with round controls. Preserve its database contract, existing answers, validation, evidence, and participant progress.
 
 ## Confirmed Gameplay
 

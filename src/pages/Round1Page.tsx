@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEve
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Clock3, RotateCcw, Eraser, Lightbulb, ShieldAlert, LoaderCircle, Save, CircleCheck, TriangleAlert } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { clearTeamDraft, readTeamDrafts, teamDraftKey, writeTeamDraft } from '../lib/team-drafts'
 import { getConflictingCells, isValidRegionMap, VARIANT_INFO, VARIANT_RULES, type SudokuVariant } from '../lib/sudoku-rules'
 import './Round1Page.css'
 
@@ -56,6 +57,7 @@ export default function Round1Page() {
   const saveQueue = useRef<Promise<void>>(Promise.resolve())
   const saveVersion = useRef(0)
   const pendingSaveTimer = useRef<number | null>(null)
+  const localDraftKey = useRef<string | null>(null)
   const givenCells = new Set(initialGrid.flatMap((value, index) => value !== '0' ? [index] : []))
   const ruleSet = useMemo(() => activeType === 'jigsaw'
     ? { ...VARIANT_RULES.jigsaw, jigsawRegions: activePuzzle?.jigsaw_regions ?? undefined }
@@ -84,11 +86,22 @@ export default function Round1Page() {
         }
       }
       if (!restored) { setLoadState('error'); return }
-      setPuzzles(restored)
-      setActiveType(restored[0].puzzle_type)
+      const { data: auth } = await supabase.auth.getUser()
+      if (!active) return
+      localDraftKey.current = auth.user ? teamDraftKey(1, auth.user.id) : null
+      const cached = localDraftKey.current ? readTeamDrafts<string>(localDraftKey.current) : {}
+      const withLocalDrafts = restored.map(puzzle => {
+        const draft = cached[puzzle.puzzle_type]
+        const preservesGivens = typeof draft === 'string' && puzzle.initial_grid.split('').every((given, index) => given === '0' || draft[index] === given)
+        return puzzle.progress_status === 'in_progress' && typeof draft === 'string' && /^[0-9]{81}$/.test(draft) && preservesGivens
+          ? { ...puzzle, board: draft }
+          : puzzle
+      })
+      setPuzzles(withLocalDrafts)
+      setActiveType(withLocalDrafts[0].puzzle_type)
       setClassicCompatibilityMode(compatibility)
       lastSavedBoards.current = Object.fromEntries(restored.map(puzzle => [puzzle.puzzle_type, puzzle.board]))
-      latestBoards.current = { ...lastSavedBoards.current }
+      latestBoards.current = Object.fromEntries(withLocalDrafts.map(puzzle => [puzzle.puzzle_type, puzzle.board]))
       skipInitialSave.current = true
       setHistory([]); setSaveMessage(''); setCompletionMessage(''); setSaveState('saved'); setLoadState('ready')
     }
@@ -120,6 +133,7 @@ export default function Round1Page() {
           return
         }
         lastSavedBoards.current[activeType] = snapshot
+        if (localDraftKey.current) clearTeamDraft(localDraftKey.current, activeType, snapshot)
         if (version === saveVersion.current) setSaveState('saved')
       })
     }, 400)
@@ -138,11 +152,20 @@ export default function Round1Page() {
     return () => window.removeEventListener('beforeunload', warn)
   }, [loadState, puzzles])
 
+  useEffect(() => {
+    const retryOnReconnect = () => {
+      if (navigator.onLine) setSaveAttempt(value => value + 1)
+    }
+    window.addEventListener('online', retryOnReconnect)
+    return () => window.removeEventListener('online', retryOnReconnect)
+  }, [])
+
   const updateCell = (value: string) => {
     if (!board || givenCells.has(selected) || status === 'completed' || checkingCompletion || switchingPuzzle) return
     const next = [...board]; next[selected] = value
     if (next.every((cell, index) => cell === board[index])) return
     latestBoards.current[activeType] = next.join('')
+    if (localDraftKey.current) writeTeamDraft(localDraftKey.current, activeType, next.join(''))
     setPuzzles(previous => previous.map(puzzle => puzzle.puzzle_type === activeType ? { ...puzzle, board: next.join('') } : puzzle))
     setHistory(previous => [...previous, board]); setSaveState('pending'); setSaveMessage(''); setCompletionMessage('')
   }
@@ -151,6 +174,7 @@ export default function Round1Page() {
     if (!history.length || status === 'completed' || checkingCompletion || switchingPuzzle) return
     const previous = history[history.length - 1]
     latestBoards.current[activeType] = previous.join('')
+    if (localDraftKey.current) writeTeamDraft(localDraftKey.current, activeType, previous.join(''))
     setPuzzles(items => items.map(puzzle => puzzle.puzzle_type === activeType ? { ...puzzle, board: previous.join('') } : puzzle))
     setHistory(items => items.slice(0, -1)); setSaveState('pending'); setSaveMessage(''); setCompletionMessage('')
   }
@@ -181,7 +205,7 @@ export default function Round1Page() {
     if (unlockedVictim) setVictimReveal(unlockedVictim)
     setCompletionMessage(classicCompatibilityMode
       ? 'Classic completion was verified by the server. Multi-puzzle victim discoveries will be available after the Round 1 setup is installed.'
-      : 'Server verification complete. The corresponding temporary victim placeholder is now unlocked.')
+      : 'Server verification complete. The corresponding victim case file is now unlocked.')
   }
 
   const switchPuzzle = async (nextType: SudokuVariant) => {
@@ -224,12 +248,10 @@ export default function Round1Page() {
   return <main className="round1-page">
     <header className="round1-header"><Link to="/team" className="round1-back" onClick={handleBack}><ArrowLeft size={18} /> BACK TO TEAM FILE</Link><span className="round1-classification">CLASSIFIED // ROUND 01</span></header>
     <section className="round1-heading"><p className="eyebrow">DIGITAL LOGIC TRAP</p><h1>THE LOGIC <span>PROTOCOL</span></h1><p>Choose any case file. Your team's progress is saved independently for each puzzle.</p></section>
-    {classicCompatibilityMode && <p className="round1-demo-banner" role="status">CLASSIC COMPATIBILITY MODE — Multi-variant setup is awaiting the test-project migration and six verified puzzle definitions.</p>}
     <section className="round1-status"><div><Clock3 size={18} /><span>SESSION TIMER</span><strong>NOT ACTIVE</strong></div><div><span>PUZZLES COMPLETE</span><strong>{completeCount} / 06</strong></div><div><span>ACTIVE PROGRESS</span><strong>{progress}%</strong></div></section>
     <nav className="round1-puzzle-nav" aria-label="Round 1 puzzles">{puzzles.map((puzzle, index) => <button key={puzzle.puzzle_type} type="button" disabled={switchingPuzzle} className={puzzle.puzzle_type === activeType ? 'active' : ''} onClick={() => void switchPuzzle(puzzle.puzzle_type)}><span>{String(index + 1).padStart(2, '0')} // {VARIANT_INFO[puzzle.puzzle_type].title}</span>{puzzle.progress_status === 'completed' ? <CircleCheck size={16} aria-label="Completed" /> : <span className="round1-puzzle-state">IN PROGRESS</span>}</button>)}</nav>
     <section className="round1-workspace"><div className="sudoku-panel">
-      <div className="sudoku-panel-heading"><div><p className="eyebrow">CASE FILE {String(puzzles.findIndex(puzzle => puzzle.puzzle_type === activeType) + 1).padStart(3, '0')}</p><h2>{variantTitle}</h2></div><span className="difficulty-tag">{activePuzzle.demo_only ? 'DEMO PUZZLE' : 'STANDARD'}</span></div>
-      {activePuzzle.demo_only && <p className="round1-demo-banner">TEMPORARY DEMONSTRATION PUZZLE — NOT FINAL EVENT CONTENT</p>}
+      <div className="sudoku-panel-heading"><div><p className="eyebrow">CASE FILE {String(puzzles.findIndex(puzzle => puzzle.puzzle_type === activeType) + 1).padStart(3, '0')}</p><h2>{variantTitle}</h2></div><span className="difficulty-tag">VERIFIED PUZZLE</span></div>
       <div className="sudoku-grid" aria-label={`${variantTitle} puzzle`} tabIndex={0} onKeyDown={handleGridKeyDown}>
         {board.map((value, index) => {
           const row = Math.floor(index / 9), col = index % 9
@@ -249,7 +271,7 @@ export default function Round1Page() {
       {saveState === 'error' && <button type="button" className="round1-retry-save" onClick={() => { setSaveMessage(''); setSaveState('pending'); setSaveAttempt(value => value + 1) }}><Save size={15} /> RETRY SAVE</button>}
       {completionMessage && <p className="round1-feedback" role={status === 'completed' ? 'status' : 'alert'}>{completionMessage}</p>}
     </div><aside className="round1-sidebar"><div className="instruction-card"><ShieldAlert size={25} /><p className="eyebrow">MISSION DIRECTIVE</p><h3>THE RULES OF LOGIC</h3><p className="round1-rule-copy">{VARIANT_INFO[activeType].instruction}</p>{activeType === 'diagonal' && <p className="round1-rule-copy">Both highlighted diagonals are additional all-different regions.</p>}{activeType === 'windoku' && <p className="round1-rule-copy">Shaded cells mark the four extra 3×3 windows.</p>}{activeType === 'jigsaw' && <p className="round1-rule-copy">Irregular regions are outlined on the board.</p>}{conflicts.size > 0 && <p className="round1-conflict-note">Rule conflicts are highlighted. No solution digits are revealed.</p>}</div><div className="evidence-locked"><Lightbulb size={26} /><p className="eyebrow">CLASSIFIED EVIDENCE</p><h3>{activePuzzle.evidence_unlocked ? 'PUZZLE SOLVED' : 'EVIDENCE LOCKED'}</h3><p>{activePuzzle.evidence_unlocked ? 'The server unlocked this puzzle’s independent evidence record. Demonstration evidence content is not configured.' : 'Solve and verify this puzzle to unlock its associated evidence record.'}</p></div></aside></section>
-    {victimReveal !== null && <div className="victim-reveal-backdrop" role="presentation"><section className="victim-reveal-card" role="dialog" aria-modal="true" aria-labelledby="victim-reveal-title"><p className="eyebrow">SECURE VALIDATION COMPLETE</p><h2 id="victim-reveal-title">VICTIM FILE REVEALED</h2><div className="victim-reveal-number">{String(victimReveal).padStart(2, '0')}</div><p>TEMPORARY DEMONSTRATION PLACEHOLDER</p><button type="button" className="round1-primary-button" onClick={() => setVictimReveal(null)}>RETURN TO CASE FILE</button></section></div>}
+    {victimReveal !== null && <div className="victim-reveal-backdrop" role="presentation"><section className="victim-reveal-card" role="dialog" aria-modal="true" aria-labelledby="victim-reveal-title"><p className="eyebrow">SECURE VALIDATION COMPLETE</p><h2 id="victim-reveal-title">VICTIM FILE REVEALED</h2><div className="victim-reveal-number">{String(victimReveal).padStart(2, '0')}</div><button type="button" className="round1-primary-button" onClick={() => setVictimReveal(null)}>VIEW EVIDENCE FILE</button></section></div>}
     <footer className="round1-footer">THE HUNT FOR 18 // INVESTIGATION SYSTEM</footer>
   </main>
 }

@@ -162,7 +162,7 @@ Round 3 uses three interactive cryptography challenges, replacing BLIND CODE and
 - Organizer drafts are edited and saved independently per question; publication is separate from round activation. Answers, hints, fragments, and final code are stored in the private schema. Configuration freezes at round start.
 - Final code verification never activates Round 4. Exact competition questions and scoring/deduction values are not finalized.
 
-**Current implementation status:** Local UI, workbench and migration draft exist. `20261127190000_round3_crypto_protocol.sql` is not applied. Its test-project dry run listed only this migration. Hosted tests wait for owner approval to apply it. See `docs/ROUND_3.md` and `docs/CURRENT_PROGRESS.md`.
+**Current implementation status:** Round 3 is complete, hosted-tested, and included in checkpoint `631b11d`. Migrations `20261127190000`, `20261127200000` and `20261127210000` are applied to the test project. See `docs/ROUND_3.md` and the current Milestone 6 & 7 entry in `docs/CURRENT_PROGRESS.md`.
 ### Round 4 — OPERATION: DEADLOCK
 
 A 2D pixel-art investigation maze.
@@ -231,9 +231,9 @@ The production project already contains test records. Do not modify or delete th
 | Evidence unlocking integration | Pending |
 | Team authentication | Pending |
 | Organizer authentication | Pending |
-| Organizer dashboard | Pending |
+| Organizer dashboard | Local implementation in progress; hosted migration and integration verification pending |
 | Round 2 | Six-challenge engine and existing organizer/participant interfaces hosted-tested; wizard conversion deferred |
-| Round 3 THE CRYPTO PROTOCOL | Local MVP and hosted test harness prepared; migration remains unapplied after two failed attempts; latest correction awaits approval |
+| Round 3 THE CRYPTO PROTOCOL | Completed, hosted-tested, committed and pushed at checkpoint `631b11d`; test migrations through `20261127210000` are applied |
 | Round 4 maze | Pending |
 | Scoring system | Pending |
 | Server-authoritative event timers | Pending |
@@ -257,13 +257,13 @@ These issues must be addressed through planned, verified changes.
 
 Current sequence:
 
-1. Obtain approval to retry the corrected Round 3 migration on the test project, then complete hosted verification and regressions.
+1. Milestone 5 is complete and hosted-tested. Milestones 6 & 7 are in local implementation; their sole migration requires explicit approval before test-project application.
 2. Implement the centralized organizer dashboard, configurable durations/marks, server-authoritative timers and scoring, and post-round leaderboards.
 3. Keep the current Round 2 organizer interface and backend unchanged; wizard conversion remains deferred.
 4. Optional Round 4; keep locked unless authorized and apply the approved skip/recovery rules.
 5. End-to-end testing and deployment after explicit approval.
 
-Do not invent challenge content or scoring values. The organizer dashboard follows Round 3 verification; Round 4 remains deferred.
+Do not invent challenge content or scoring values. Milestone 6 & 7 implementation is in progress; its test-only migration is pending owner approval. Round 4 maze remains deferred.
 
 Implement one core feature at a time.
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Fingerprint, LoaderCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
-type Unlock = { victim_number: number; puzzle_type: string; slot?: number }
+type Casefile = { victim_number: number; unlocked: boolean; full_name: string | null; photograph_path: string | null; description: string | null; investigation_clue: string | null; photo_url?: string | null }
 
 const victims = Array.from({ length: 18 }, (_, index) => index + 1)
 
@@ -37,7 +37,7 @@ const mobileThreads = victims.slice(0, -1).map((victim) => {
 })
 
 export function EvidenceBoard({ participantView = false }: { participantView?: boolean }) {
-  const [unlocks, setUnlocks] = useState<Unlock[]>([])
+  const [casefiles, setCasefiles] = useState<Casefile[]>([])
   const [loadState, setLoadState] = useState<'idle' | 'loading' | 'ready' | 'error'>(participantView ? 'loading' : 'idle')
 
   useEffect(() => {
@@ -45,28 +45,23 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
     let active = true
     async function loadUnlocks() {
       setLoadState('loading')
-      const { data, error } = await supabase
-        .from('team_round1_evidence_unlocks')
-        .select('victim_number,puzzle_type')
-        .order('victim_number')
+      const { data, error } = await supabase.rpc('load_victim_casefiles')
       if (!active) return
       if (error || !Array.isArray(data)) { setLoadState('error'); return }
-      const round1 = data.filter((row): row is Unlock => Number.isInteger(row.victim_number)
-        && row.victim_number >= 1 && row.victim_number <= 6
-        && typeof row.puzzle_type === 'string')
-      const { data: round2, error: round2Error } = await supabase.from('team_round2_evidence_unlocks').select('victim_number,slot').order('victim_number')
+      const loaded = await Promise.all((data as Casefile[]).map(async profile => {
+        if (!profile.unlocked || !profile.photograph_path) return { ...profile, photo_url: null }
+        const { data: signed } = await supabase.storage.from('victim-photos').createSignedUrl(profile.photograph_path, 3600)
+        return { ...profile, photo_url: signed?.signedUrl ?? null }
+      }))
       if (!active) return
-      const round2Rows: Unlock[] = !round2Error && Array.isArray(round2) ? round2.filter(row => Number.isInteger(row.victim_number) && row.victim_number >= 7 && row.victim_number <= 12 && Number.isInteger(row.slot)).map(row => ({ victim_number: row.victim_number, puzzle_type: `round2-slot-${row.slot}`, slot: row.slot })) : []
-      const { data: round3, error: round3Error } = await supabase.from('team_round3_evidence_unlocks').select('victim_number,slot').order('victim_number')
-      if (!active) return
-      const round3Rows: Unlock[] = !round3Error && Array.isArray(round3) ? round3.filter(row => Number.isInteger(row.victim_number) && row.victim_number >= 13 && row.victim_number <= 18 && Number.isInteger(row.slot)).map(row => ({ victim_number: row.victim_number, puzzle_type: `round3-slot-${row.slot}`, slot: row.slot })) : []
-      setUnlocks([...round1, ...round2Rows, ...round3Rows])
+      setCasefiles(loaded)
       setLoadState('ready')
     }
     void loadUnlocks()
     return () => { active = false }
   }, [participantView])
-  const unlockedVictims = new Set(unlocks.map(unlock => unlock.victim_number))
+  const profileByNumber = new Map(casefiles.map(profile => [profile.victim_number, profile]))
+  const unlockedVictims = new Set(casefiles.filter(profile => profile.unlocked).map(profile => profile.victim_number))
 
   return (
     <section id="evidence" className="investigation-section evidence-section" aria-labelledby="evidence-title">
@@ -78,7 +73,7 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
 
       {participantView && loadState === 'loading' && <p className="round1-save-status" role="status"><LoaderCircle className="round1-spinner" size={15} /> RESTORING TEAM DISCOVERIES</p>}
       {participantView && loadState === 'error' && <p className="round1-feedback" role="alert">Team discoveries could not be restored. Retry after the secure evidence service is available.</p>}
-      {participantView && loadState === 'ready' && <p className="round1-save-status" role="status">{unlockedVictims.size} / 18 DEMONSTRATION VICTIM FILES UNLOCKED</p>}
+      {participantView && loadState === 'ready' && <p className="round1-save-status" role="status">{unlockedVictims.size} / 18 VICTIM FILES UNLOCKED</p>}
 
       <div className="evidence-board" aria-label="Investigation evidence board with 18 unidentified victim positions">
         <div className="board-grid-markings" aria-hidden="true" />
@@ -100,15 +95,14 @@ export function EvidenceBoard({ participantView = false }: { participantView?: b
             <article className={`victim-card ${participantView && !unlockedVictims.has(victim) ? 'victim-card-sealed' : ''}`} key={victim}>
               <div className="evidence-pin" aria-hidden="true" />
               <div className="case-marker">CASE {String(victim).padStart(2, '0')}</div>
-              <div className="victim-photograph" aria-label={participantView && !unlockedVictims.has(victim) ? `Victim ${String(victim).padStart(2, '0')} file sealed` : `Victim ${String(victim).padStart(2, '0')} temporary demonstration placeholder`}>
-                <div className="silhouette-head" />
-                <div className="silhouette-body" />
-                <span>{participantView && !unlockedVictims.has(victim) ? 'FILE SEALED' : participantView ? 'DEMO PLACEHOLDER' : 'UNIDENTIFIED'}</span>
+              <div className="victim-photograph" aria-label={participantView && !unlockedVictims.has(victim) ? `Victim ${String(victim).padStart(2, '0')} file sealed` : `Victim ${String(victim).padStart(2, '0')} profile`} style={participantView && profileByNumber.get(victim)?.photo_url ? { backgroundImage: `url("${profileByNumber.get(victim)?.photo_url}")` } : undefined}>
+                {!participantView || !unlockedVictims.has(victim) ? <><div className="silhouette-head" /><div className="silhouette-body" /><span>{participantView ? 'FILE SEALED' : 'RESTRICTED FILE'}</span></> : <span className="victim-photo-name">{profileByNumber.get(victim)?.full_name}</span>}
               </div>
               <div className="victim-record">
                 <Fingerprint size={16} aria-hidden="true" />
-                <span>{participantView && !unlockedVictims.has(victim) ? 'IDENTITY SEALED' : `VICTIM ${String(victim).padStart(2, '0')}`}</span>
+                <span>{participantView && !unlockedVictims.has(victim) ? 'IDENTITY SEALED' : profileByNumber.get(victim)?.full_name ?? `VICTIM ${String(victim).padStart(2, '0')}`}</span>
               </div>
+              {participantView && unlockedVictims.has(victim) && <div className="victim-casefile"><p>{profileByNumber.get(victim)?.description}</p><small>{profileByNumber.get(victim)?.investigation_clue}</small></div>}
             </article>
           ))}
         </div>

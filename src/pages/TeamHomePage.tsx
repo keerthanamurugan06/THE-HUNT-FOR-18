@@ -1,8 +1,25 @@
-import { useState } from 'react'
-import { ArrowRight, LogOut, ShieldCheck } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ArrowRight, LogOut, ShieldCheck, Trophy } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTeamAuth } from '../context/team-auth-context'
 import { EvidenceBoard } from '../components/EvidenceBoard'
+import { supabase } from '../lib/supabase'
+
+type Result = { team_id: string; team_name: string; round_score: number; cumulative_score: number; rank: number; tied: boolean }
+
+function PublishedResults() {
+  const [boards, setBoards] = useState<{ round: number; rows: Result[] }[]>([])
+  useEffect(() => {
+    let active = true
+    void Promise.all([1, 2, 3].map(async round => {
+      const { data } = await supabase.rpc('load_published_leaderboard', { p_round_number: round })
+      return data ? { round, rows: data as Result[] } : null
+    })).then(results => { if (active) setBoards(results.filter((value): value is { round: number; rows: Result[] } => value !== null)) })
+    return () => { active = false }
+  }, [])
+  if (!boards.length) return null
+  return <section className="published-results"><p className="eyebrow"><Trophy size={14}/> RELEASED RESULTS</p>{boards.map(board => <article key={board.round}><h2>ROUND {String(board.round).padStart(2, '0')} LEADERBOARD</h2><ol>{board.rows.map(team => <li key={team.team_id}><span>{team.rank}{team.tied ? ' · TIE' : ''}</span><strong>{team.team_name}</strong><small>{team.round_score} round · {team.cumulative_score} cumulative</small></li>)}</ol></article>)}</section>
+}
 
 export default function TeamHomePage() {
   const { team, signOut } = useTeamAuth()
@@ -50,6 +67,7 @@ export default function TeamHomePage() {
         </Link>
       </section>
       <EvidenceBoard participantView />
+      <PublishedResults />
     </main>
   )
 }
